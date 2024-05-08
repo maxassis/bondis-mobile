@@ -7,6 +7,10 @@ module.exports = {
         'bondis-black': '#252823',
         'bondis-green': '#B1FF73',
         'bondis-text-gray': '#EEEEEE'
+      },
+      fontFamily: {
+        'inter-regular': 'Inter_400Regular',
+        'inter-bold': 'Inter_700Bold',
       }
     },
   },

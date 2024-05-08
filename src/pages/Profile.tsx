@@ -2,6 +2,8 @@ import { SafeAreaView, Text, View, Image } from "react-native";
 import Logo from "../../assets/Logo.svg";
 import Settings from "../../assets/settings.svg";
 import { StatusBar } from "expo-status-bar";
+import Map from "../../assets/map.svg"
+import Plus from "../../assets/plus.svg"
 
 export default function Profile() {
   return (
@@ -16,37 +18,52 @@ export default function Profile() {
           <Settings />
         </View>
 
-        <Text className="text-bondis-green text-lg font-bold text-center mt-[29px]">
+        <Text className="text-bondis-green text-lg font-inter-bold text-center mt-[29px]">
           Nildis da Silva
         </Text>
-        <Text className="text-center text-bondis-text-gray text-sm mt-2">
+        <Text className="text-center text-bondis-text-gray font-inter-regular text-sm mt-2">
           Desenvolvedora e corredora iniciante
         </Text>
 
         <View className="flex-row justify-between h-[51px] mt-[29px] mx-4">
           <View>
-            <Text className="text-white text-lg text-center font-bold">1</Text>
-            <Text className="text-[#828282]">Desafio ativo</Text>
+            <Text className="text-white text-lg text-center font-inter-bold">1</Text>
+            <Text className="text-[#828282] font-inter-regular">Desafio ativo</Text>
           </View>
           <View>
-            <Text className="text-white text-lg text-center font-bold">0</Text>
-            <Text className="text-[#828282]">Desafios finalizados</Text>
+            <Text className="text-white text-lg text-center font-inter-bold">0</Text>
+            <Text className="text-[#828282] font-inter-regular">Desafios finalizados</Text>
           </View>
           <View>
-            <Text className="text-white text-lg text-center font-bold">
+            <Text className="text-white text-lg text-center font-inter-bold">
               5 km
             </Text>
-            <Text className="text-[#828282]">Percorridos</Text>
+            <Text className="text-[#828282] font-inter-regular">Percorridos</Text>
           </View>
         </View>
       </View>
 
       <View className="h-[61px] pl-5">
-        <Text className="font-bold text-2xl my-auto">Desafios</Text>
+        <Text className="font-inter-bold text-2xl my-auto">Desafios</Text>
       </View>
 
-      <View className="items-center mx-[15px]">
-        <Image className="w-full rounded-2xl" source={require("../../assets/Card.png")} />        
+      <View className="items-center mx-[15px] relative">
+        <Image className="w-full rounded-2xl" source={require("../../assets/Card.png")} /> 
+        <View className="h-[79px] w-11/12 flex-row p-4 rounded-xl justify-between bg-white absolute bottom-[63px]">
+            <View>
+              <Text className="font-inter-bold text-[16.86px]">Cidade Maravilhosa</Text>
+              <View className="flex-row items-center">
+                <Text className="font-inter-bold text-base">154km</Text>
+                <Text className="ml-8 text-[#757575] text-xs font-inter-regular">3,3% completado</Text>
+              </View>
+            </View>
+            <Map />
+        </View>
+
+        <View className="rounded-full bg-bondis-green absolute w-16 h-16 justify-center items-center right-0 bottom-2">
+          <Plus />
+        </View>
+
       </View>
 
       <StatusBar style="light" translucent={false} backgroundColor="#252823" />
