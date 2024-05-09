@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View } from 'react-native';
@@ -8,11 +8,14 @@ import { requestForegroundPermissionsAsync,
   watchPositionAsync,
   LocationAccuracy
  } from 'expo-location';
+ import BottomSheet from "@gorhom/bottom-sheet";
 
 export default function Maps() {
   const [location, setLocation] = useState<LocationObject | null>(null)
 
   const mapRef = useRef<MapView>(null)
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ["25%", "100%"], []);
 
   async function requestLocationPermissions() {
   
@@ -60,6 +63,16 @@ export default function Maps() {
           <Marker coordinate={location.coords} />
         </MapView>  
       } 
+
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          backgroundStyle={{ backgroundColor: "#fff" }}
+        >
+          <View>
+            <Text>oi</Text>
+          </View>
+        </BottomSheet>
     </View>
   );
 }
