@@ -6,7 +6,8 @@ module.exports = {
       colors: {
         'bondis-black': '#252823',
         'bondis-green': '#B1FF73',
-        'bondis-text-gray': '#EEEEEE'
+        'bondis-text-gray': '#EEEEEE',
+        'bondis-gray-secondary': '#828282'
       },
       fontFamily: {
         'inter-regular': 'Inter_400Regular',

@@ -12,6 +12,7 @@ export default function Bottom() {
         <BottomSheet
           ref={bottomSheetRef}
           snapPoints={snapPoints}
+          index={0}
           backgroundStyle={{ backgroundColor: "#fff" }}
         >
           <View>
