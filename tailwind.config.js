@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       colors: {
         'bondis-black': '#252823',
-        'bondis-green': '#B1FF73',
+        'bondis-green': '#12FF55',
         'bondis-text-gray': '#EEEEEE',
         'bondis-gray-secondary': '#828282'
       },
