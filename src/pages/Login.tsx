@@ -1,4 +1,4 @@
-import { Text, View, TextInput } from "react-native";
+import { Text, View, TextInput, SafeAreaView } from "react-native";
 import Close from "../../assets/Close.svg"
 import Logo from "../../assets/logo2.svg"
 import Google from "../../assets/google.svg"
@@ -7,7 +7,7 @@ import Apple from "../../assets/apple.svg"
 
 export default function Login() {
     return(
-        <View className="pt-[38px] px-5 ">
+        <SafeAreaView className="pt-[38px] px-5 ">
             <View className="items-end mb-[10px]">
                 <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
                     <Close />
@@ -38,9 +38,6 @@ export default function Login() {
                 <Facebook />
                 <Apple />               
             </View>
-        </View>
-
-
-
+        </SafeAreaView>
     )
 }
