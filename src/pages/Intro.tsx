@@ -7,7 +7,7 @@ export default function Intro() {
   const navigation = useNavigation<any>();
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1 bg-white">
       <ImageBackground className="flex-1 justify-end" source={require("../../assets/Background.png")} resizeMode="cover">
         
         <View className="h-[305px] mb-[79px] px-[21px] items-center">

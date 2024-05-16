@@ -1,8 +1,8 @@
 import { StackRouter } from "@react-navigation/native"
-import AppRoutes from "./app.routes"
+import LoginRoutes from "./login.routes"
 
 
 export default function Routes() {
    
-   return <AppRoutes />
+   return <LoginRoutes />
 }
