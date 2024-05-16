@@ -13,11 +13,9 @@ export default function CreateAccount() {
     return (
         <SafeAreaView className="pt-[38px] px-5 bg-white flex-1">
             <View className="items-end mb-[10px]">
-                <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-                    <TouchableOpacity onPress={() => navigation.navigate('Intro')} >
+                <TouchableOpacity onPress={() => navigation.navigate('Intro')} className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
                         <Close  />
-                    </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
             </View>
 
             <Logo />

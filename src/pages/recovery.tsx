@@ -9,11 +9,9 @@ export default function Recovery() {
     return(
         <SafeAreaView className="flex-1 bg-white px-5 pt-[38px]">
              <View className="items-end mb-[10px]">
-                <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')} >
+                <TouchableOpacity onPress={() => navigation.navigate('Login')} className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
                         <Close />
-                    </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
             </View>
 
             <View className="h-[368px] pt-8">

@@ -1,11 +1,14 @@
-import { SafeAreaView, Text, View, Image } from "react-native";
-import Logo from "../../assets/Logo.svg";
+import { SafeAreaView, Text, View, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import Logo from "../../assets/logo-white.svg"
 import Settings from "../../assets/settings.svg";
 import { StatusBar } from "expo-status-bar";
 import Map from "../../assets/map.svg"
 import Plus from "../../assets/plus.svg"
 
 export default function Profile() {
+  const navigation = useNavigation<any>();
+
   return (
     <SafeAreaView>
       <View className="h-[325px] bg-bondis-black">
@@ -47,9 +50,9 @@ export default function Profile() {
         <Text className="font-inter-bold text-2xl my-auto">Desafios</Text>
       </View>
 
-      <View className="items-center mx-[15px] relative">
+      <View  className="items-center mx-[15px] relative">
         <Image className="w-full rounded-2xl" source={require("../../assets/Card.png")} /> 
-        <View className="h-[79px] w-11/12 flex-row p-4 rounded-xl justify-between bg-white absolute bottom-[63px]">
+        <TouchableOpacity onPress={() => navigation.navigate('Map')} className="h-[79px] w-11/12 flex-row p-4 rounded-xl justify-between bg-white absolute bottom-[63px]">
             <View>
               <Text className="font-inter-bold text-[16.86px]">Cidade Maravilhosa</Text>
               <View className="flex-row items-center">
@@ -58,7 +61,7 @@ export default function Profile() {
               </View>
             </View>
             <Map />
-        </View>
+        </TouchableOpacity>
 
         <View className="rounded-full bg-bondis-green absolute w-16 h-16 justify-center items-center right-0 bottom-2">
           <Plus />

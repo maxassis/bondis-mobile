@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { StatusBar } from "expo-status-bar";
+import { useNavigation } from "@react-navigation/native";
+// import { StatusBar } from "expo-status-bar";
 import MapView, { Marker } from "react-native-maps";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -11,6 +12,7 @@ import {
 } from "expo-location";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Bar from "../../assets/Bar.svg";
+import Left from "../../assets/arrow-left.svg"
 import { Image } from "react-native";
 import Winner from "../../assets/winner.svg";
 import Terceiro from "../../assets/terceira.svg";
@@ -18,12 +20,14 @@ import Segundo from "../../assets/segundo.svg";
 import Primeiro from "../../assets/primeiro.svg";
 import UserTime from "../components/userTime";
 
-export default function Maps() {
+export default function Map() {
+  const navigation = useNavigation<any>();
+
   const [location, setLocation] = useState<LocationObject | null>(null);
 
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["20%", "100%"], []);
+  const snapPoints = useMemo(() => ["20%", "85%" ,"100%"], []);
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
@@ -57,7 +61,8 @@ export default function Maps() {
   }, []);
 
   return (
-    <View className="flex-1 bg-white justify-center items-center">
+    <View className="flex-1 bg-white justify-center items-center relative">
+      
       {location && (
         <MapView
           className="flex-1 w-full"
@@ -72,6 +77,12 @@ export default function Maps() {
           <Marker coordinate={location.coords} />
         </MapView>
       )}
+
+      <TouchableOpacity onPress={() => navigation.navigate('Profile')} className="absolute top-[38px] left-[13px] h-[43px] 
+      w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
+          <Left  />                    
+      </TouchableOpacity>
+        
 
       <BottomSheet
         ref={bottomSheetRef}
@@ -197,8 +208,6 @@ export default function Maps() {
               <UserTime />
               <UserTime />
             </View>
-
-
 
           </SafeAreaView>
         </BottomSheetScrollView>
