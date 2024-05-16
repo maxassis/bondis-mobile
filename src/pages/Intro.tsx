@@ -1,9 +1,11 @@
 import { Text, Image, ImageBackground, SafeAreaView, View } from "react-native";
 import Logo from "../../assets/Logo3.svg"
+import { useNavigation } from "@react-navigation/native";
 
-const image = { uri: "../../assets/Background-large.png" };
 
 export default function Intro() {
+  const navigation = useNavigation<any>();
+
   return (
     <SafeAreaView className="flex-1">
       <ImageBackground className="flex-1 justify-end" source={require("../../assets/Background.png")} resizeMode="cover">
@@ -19,7 +21,7 @@ export default function Intro() {
                 <Text className="text-base font-inter-bold">Cadastre-se</Text>
             </View>
 
-            <Text className="text-base mt-4">Ja é cadastrado? <Text className="font-inter-bold underline text-base">Entrar</Text></Text>
+            <Text className="text-base mt-4">Ja é cadastrado? <Text className="font-inter-bold underline text-base" onPress={() => navigation.navigate('Login')}>Entrar</Text></Text>
         </View>
  
       </ImageBackground>

@@ -1,4 +1,5 @@
-import { Text, View, TextInput, SafeAreaView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Text, View, TextInput, SafeAreaView, TouchableOpacity } from "react-native";
 import Close from "../../assets/Close.svg"
 import Logo from "../../assets/logo2.svg"
 import Google from "../../assets/google.svg"
@@ -6,11 +7,15 @@ import Facebook from "../../assets/facebook.svg"
 import Apple from "../../assets/apple.svg"
 
 export default function Login() {
+    const navigation = useNavigation<any>();
+
     return(
         <SafeAreaView className="pt-[38px] px-5 ">
             <View className="items-end mb-[10px]">
                 <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-                    <Close />
+                    <TouchableOpacity onPress={() => navigation.navigate('Intro')} >
+                        <Close />
+                    </TouchableOpacity>
                 </View>
             </View>
 
