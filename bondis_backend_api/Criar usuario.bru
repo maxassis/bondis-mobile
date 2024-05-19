@@ -1,0 +1,20 @@
+meta {
+  name: Criar usuario
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "max5",
+    "email": "max5@teste.com",
+    "password": "1234",
+    "username": "max5"
+  }
+}
