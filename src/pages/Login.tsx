@@ -44,10 +44,9 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     })
     .then(res  => res.json() as unknown as TokenType)
-    .then(data => {
+    .then(data => {      
       AsyncStorage.setItem("@Bondis:token", data.access_token);
-      tokenStore(data.access_token);
-      console.log(data.access_token);
+      tokenStore(data.access_token);      
     })
     .catch(err => {
       console.error(err);

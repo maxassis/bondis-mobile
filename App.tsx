@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { Text } from 'react-native';
 import Maps from './src/pages/Map';
@@ -8,8 +10,19 @@ import { Inter_700Bold, Inter_400Regular, useFonts } from '@expo-google-fonts/in
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Intro from './src/pages/Intro';
 import Routes from "./src/routes";
+import tokenExists from "./src/store/auth";
 
 export default function App() {
+  const authStore = tokenExists((state) => state.setToken);
+
+  useEffect(() => {
+    async function getToken() {
+      const storagedToken = await AsyncStorage.getItem("@Bondis:token");
+      storagedToken && authStore(storagedToken);   
+    }
+    getToken();
+  }, []);
+
   let [fontsLoaded, fontError] = useFonts({
     Inter_700Bold,
     Inter_400Regular,
