@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useForm, Controller } from "react-hook-form";
@@ -37,20 +38,36 @@ export default function Login() {
 
 
   const onSubmit = async ({ email, password }: { email: string; password: string }) => {
+    try {
+      const response = await fetch("http://172.22.0.1:3000/signin/", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data: TokenType = await response.json();
 
-    fetch("http://172.22.0.1:3000/signin/", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    })
-    .then(res  => res.json() as unknown as TokenType)
-    .then(data => {      
-      AsyncStorage.setItem("@Bondis:token", data.access_token);
-      tokenStore(data.access_token);      
-    })
-    .catch(err => {
-      console.error(err);
-    })
+      if (!response.ok && response.status === 401) {
+            Alert.alert(
+              'Senha ou usuário inválido',
+              'Por favor, tente outra vez.',
+              [
+                {
+                  text: 'Fechar',
+                  style: 'cancel',
+                },
+              ],
+              { cancelable: false }
+            );
+
+         throw new Error("Senha ou usuário inválido")   
+      }  
+
+      await AsyncStorage.setItem("@Bondis:token", data.access_token);
+      tokenStore(data.access_token);
+    } 
+      catch (error) {
+      console.error(error);
+    }
   };
 
   return (

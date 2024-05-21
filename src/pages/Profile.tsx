@@ -18,7 +18,7 @@ export default function Profile() {
             source={require("../../assets/Avatar.png")}
             className="w-[72px] h-[72px] mt-auto"
           />
-          <Settings />
+          <Settings onPress={() => navigation.navigate('Configurations')}/>
         </View>
 
         <Text className="text-bondis-green text-lg font-inter-bold text-center mt-[29px]">

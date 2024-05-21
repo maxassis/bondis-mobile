@@ -18,7 +18,7 @@ export default function App() {
   useEffect(() => {
     async function getToken() {
       const storagedToken = await AsyncStorage.getItem("@Bondis:token");
-      storagedToken && authStore(storagedToken);   
+      if(storagedToken) authStore(storagedToken);   
     }
     getToken();
   }, []);
