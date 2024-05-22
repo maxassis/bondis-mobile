@@ -16,6 +16,7 @@ export default function AppRoutes() {
             <App.Screen name="Profile" component={Profile} />
             <App.Screen name="Map" component={Map} />
             <App.Screen name="Configurations" component={MenuConfigurations} />
+            
          
         </App.Navigator>
     )

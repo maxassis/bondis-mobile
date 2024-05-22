@@ -5,6 +5,7 @@ import Recovery from '../pages/recovery';
 import CreateAccount from '../pages/createAccount';
 import AccountDone from '../pages/accountDone';
 import CreatePassword from '../pages/createPassword';
+import CreateAccountGetCode from '../pages/createAccountGetCode';
 
 const App = createNativeStackNavigator()
 
@@ -22,6 +23,7 @@ export default function LoginRoutes() {
             <App.Screen name="CreateAccount" component={CreateAccount} />
             <App.Screen name="CreatePassword" component={CreatePassword} />
             <App.Screen name="AccountDone" component={AccountDone} />
+            <App.Screen name="GetCode" component={CreateAccountGetCode} />
             
         </App.Navigator>
     )

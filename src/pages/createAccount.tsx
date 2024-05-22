@@ -29,7 +29,7 @@ export default function CreateAccount() {
             <Text className="mt-8 font-inter-bold text-base">E-mail</Text>
             <TextInput placeholder="Senha" className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"/>
 
-            <TouchableOpacity onPress={() => navigation.navigate('CreatePassword')} className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center">
+            <TouchableOpacity onPress={() => navigation.navigate('GetCode')} className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center">
                 <Text className="font-inter-bold text-base">Proximo </Text> 
                 <Arrow />
             </TouchableOpacity>   

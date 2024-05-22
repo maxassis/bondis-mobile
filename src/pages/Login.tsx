@@ -17,25 +17,23 @@ import Facebook from "../../assets/facebook.svg";
 import Apple from "../../assets/apple.svg";
 import tokenExists from "../store/auth";
 
+type FormData = {
+  email: string;
+  password: string;
+};
+
+type TokenType = {
+  access_token: string;
+}
+
 export default function Login() {
   const navigation = useNavigation<any>();
   const tokenStore = tokenExists((state) => state.setToken);
-
-  type FormData = {
-    email: string;
-    password: string;
-  };
-
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<FormData>();
-
-  type TokenType = {
-    access_token: string;
-  }
-
 
   const onSubmit = async ({ email, password }: { email: string; password: string }) => {
     try {
