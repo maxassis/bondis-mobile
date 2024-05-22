@@ -30,6 +30,10 @@ export default function CreateAccount() {
 
   const onSubmit = async ({ name, email }: { name: string; email: string }) => {
     // console.log(name, email);
+    navigation.navigate('GetCode', {
+      name,
+      email
+    });
   };
 
   return (

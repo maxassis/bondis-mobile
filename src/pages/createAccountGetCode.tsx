@@ -4,8 +4,9 @@ import Logo from "../../assets/logo2.svg"
 import Arrow from "../../assets/arrow-right.svg"
 import { useNavigation } from "@react-navigation/native";
 
-export default function CreateAccountGetCode() {
+export default function CreateAccountGetCode({ route }: any) {
     const navigation = useNavigation<any>();
+    const { name, email } = route.params;
 
     return(
         <SafeAreaView className="flex-1 bg-white px-5 pt-[38px] pb-8">
@@ -17,10 +18,10 @@ export default function CreateAccountGetCode() {
 
             <Logo />
 
-            <Text className='text-2xl font-inter-bold mt-4'>Manuela, verifique seu e-mail</Text>
+            <Text className='text-2xl font-inter-bold mt-4'>{name}, verifique seu e-mail</Text>
 
             <Text className='mt-4 text-bondis-gray-dark text-base'>Um código de verificação foi enviado para:</Text>
-            <Text className='text-[#1977F3] text-base'>bondis@gmail.com</Text>
+            <Text className='text-[#1977F3] text-base'>{email}</Text>
 
             <Text className="font-inter-bold text-base mt-8">Informe o código</Text>
             <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"/>
