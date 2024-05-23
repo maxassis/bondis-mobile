@@ -5,7 +5,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Button
+  Alert
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import Close from "../../assets/Close.svg";
@@ -76,6 +76,13 @@ export default function CreateAccountGetCode({ route }: any) {
       const data: {message: string} = await response.json();
 
       if (!response.ok) {
+        Alert.alert("Código invalido", "", [
+          {
+            text: "Ok",
+            style: "cancel",
+          },
+        ]);
+
         throw new Error(`Código inválido, status ${response.status}`);
       }
       
