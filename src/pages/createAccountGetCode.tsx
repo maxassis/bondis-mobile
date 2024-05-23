@@ -57,8 +57,6 @@ export default function CreateAccountGetCode({ route }: any) {
   };
 
   function sendMail() {
-    // console.log("requisição para enviar email");
-    
      fetch("http://172.22.0.1:3000/sendmail", {
       method: "POST",
       headers: { "Content-type": "application/json" },
@@ -87,7 +85,7 @@ export default function CreateAccountGetCode({ route }: any) {
       }
       
       // console.log("codigo correto");     
-      navigation.navigate("CreatePassword");
+      navigation.navigate("CreatePassword", {name, email});
 
     } catch (error) {
       console.error(error);
@@ -149,7 +147,7 @@ export default function CreateAccountGetCode({ route }: any) {
         reenviar
       </Text>
         :
-      <TouchableOpacity  onPress={startTimer} disabled={isActive} className="flex-row items-center mt-8 gap-x-2" >
+      <TouchableOpacity  onPress={() => {startTimer(); sendMail()}} disabled={isActive} className="flex-row items-center mt-8 gap-x-2" >
           <Refresh />
           <Text className="text-base underline font-inter-bold">Reenviar código</Text>
       </TouchableOpacity>
