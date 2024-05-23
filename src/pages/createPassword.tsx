@@ -30,6 +30,14 @@ const CriteriaStyles = cva("text-sm text-[#34A853]", {
   },
 });
 
+const PassStrong = cva("mt-1 text-[#34A853] text-sm font-inter-bold", {
+  variants: {
+    intent: {
+      error: "text-[#EB4335]",
+    },
+  },
+})
+
 export default function CreatePassword() {
   const navigation = useNavigation<any>();
   const [password, setPassword] = useState<string>("");
@@ -88,8 +96,18 @@ export default function CreatePassword() {
         value={password}
         secureTextEntry
       />
-      <Text className="mt-1 text-[#34A853] text-sm font-inter-bold">
-        {criteria.length && criteria.uppercase && criteria.lowercase && criteria.number && criteria.specialChar ? "Senha segura!" : null}
+      <Text className={PassStrong({intent: criteria.length &&
+        criteria.uppercase &&
+        criteria.lowercase &&
+        criteria.number &&
+        criteria.specialChar ? null : "error",})}>
+        {criteria.length &&
+        criteria.uppercase &&
+        criteria.lowercase &&
+        criteria.number &&
+        criteria.specialChar
+          ? "Senha segura!"
+          : "Senha fraca!"}
       </Text>
 
       <View className="p-4 border-[1px] border-[#D9D9D9] mt-8 rounded-[4px]">
@@ -148,23 +166,27 @@ export default function CreatePassword() {
         </View>
       </View>
 
+      { 
+      criteria.length &&
+      criteria.uppercase &&
+      criteria.lowercase &&
+      criteria.number &&
+      criteria.specialChar ?    
       <View className="mt-8">
-         <Text className="font-inter-bold text-base">
-            Redigite sua senha
-         </Text>   
-         <TextInput
-            className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
-            onChangeText={(e) => setPassword2(e)}
-            value={password2}
-            secureTextEntry
+        <Text className="font-inter-bold text-base">Redigite sua senha</Text>
+        <TextInput
+          className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
+          onChangeText={(e) => setPassword2(e)}
+          value={password2}
+          secureTextEntry
         />
-        <Text className="text-[#EB4335] font-inter-bold text-sm mt-2">É necessario redigitar a senha igual.</Text>   
-
-      </View>      
-
-
-
-
+        <Text className="text-[#EB4335] font-inter-bold text-sm mt-2">
+          É necessario redigitar a senha igual.
+        </Text>
+      </View>
+      :
+      null
+     }
 
       <TouchableOpacity
         onPress={() => navigation.navigate("AccountDone")}
@@ -186,4 +208,3 @@ export default function CreatePassword() {
     </SafeAreaView>
   );
 }
-
