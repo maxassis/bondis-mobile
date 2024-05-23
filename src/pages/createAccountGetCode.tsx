@@ -57,7 +57,7 @@ export default function CreateAccountGetCode({ route }: any) {
   };
 
   function sendMail() {
-     console.log("requisição para enviar email");
+    // console.log("requisição para enviar email");
     
      fetch("http://172.22.0.1:3000/sendmail", {
       method: "POST",
@@ -130,20 +130,23 @@ export default function CreateAccountGetCode({ route }: any) {
       />  
         {errors.code && (<Text className="mt-1 text-bondis-gray-dark">{String(errors?.code?.message)}</Text>)}
 
+      { isActive && 
       <Text className="font-inter-bold text-base mt-8">
         Não recebeu o código?
       </Text>
+      }
+
+     { isActive ?     
       <Text className="mt-2 text-base">
         Aguarde <Text className="text-[#1977F3] text-base">{formatTime(timeLeft)}</Text> para
         reenviar
       </Text>
-
-      <TouchableOpacity onPress={startTimer} disabled={isActive} className="flex-row items-center mt-8 gap-x-2" >
-        {/* <View > */}
+        :
+      <TouchableOpacity  onPress={startTimer} disabled={isActive} className="flex-row items-center mt-8 gap-x-2" >
           <Refresh />
           <Text className="text-base underline font-inter-bold">Reenviar código</Text>
-        {/* </View> */}
       </TouchableOpacity>
+     }
 
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
