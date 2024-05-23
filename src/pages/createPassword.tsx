@@ -1,58 +1,189 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, Text, View, TextInput, TouchableOpacity } from "react-native"
-import Close from "../../assets/Close.svg"
-import Logo from "../../assets/logo2.svg"
+import {
+  SafeAreaView,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  TextInputChangeEventData,
+  NativeSyntheticEvent,
+} from "react-native";
+import { cva } from "class-variance-authority";
+import Close from "../../assets/Close.svg";
+import Logo from "../../assets/logo2.svg";
+import CheckGreen from "../../assets/check-green.svg";
+
+interface Criteria {
+  length: boolean;
+  uppercase: boolean;
+  lowercase: boolean;
+  number: boolean;
+  specialChar: boolean;
+}
+
+const CriteriaStyles = cva("text-sm text-[#34A853]", {
+  variants: {
+    intent: {
+      error: "text-black",
+    },
+  },
+});
 
 export default function CreatePassword() {
-    const navigation = useNavigation<any>();
+  const navigation = useNavigation<any>();
+  const [password, setPassword] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
+  const [criteria, setCriteria] = useState<Criteria>({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    specialChar: false,
+  });
 
-    return(
-        <SafeAreaView className="flex-1 bg-white px-5 pt-[38px]">
-            <View className="items-end mb-[10px]">
-                <TouchableOpacity onPress={() => navigation.navigate('Intro')} className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-                    <Close />
-                </TouchableOpacity>
-            </View>
+  const validatePassword = (text: string): void => {
+    const length = text.length >= 8;
+    const uppercase = /[A-Z]/.test(text);
+    const lowercase = /[a-z]/.test(text);
+    const number = /[0-9]/.test(text);
+    const specialChar = /[!@#$%^&*(),.?":{}|<>]/.test(text);
 
-            <Logo />
+    setCriteria({
+      length,
+      uppercase,
+      lowercase,
+      number,
+      specialChar,
+    });
 
-            <Text className="font-inter-bold mt-4 text-2xl">Crie uma senha</Text>
+    setPassword(text);
+  };
 
-            <Text className="font-inter-bold text-base mt-8">Senha</Text>
-            <TextInput placeholder="E-mail" className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"/>
+  const handleTextChange = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>
+  ): void => {
+    validatePassword(event.nativeEvent.text);
+  };
 
-            <View className="p-4 border-[1px] border-[#D9D9D9] mt-8 rounded-[4px]">
-                <Text className="font-inter-bold text-sm mb-[10px]">Sua senha deve conter:</Text>
-                <View className="flex-row items-center mb-2 gap-x-[9px]">
-                    <Close />
-                    <Text>Mínimo de 8 caracteres</Text>
-                </View>
-                <View className="flex-row items-center mb-2 gap-x-[9px]">
-                    <Close />
-                    <Text>1 letra maiúscula</Text>
-                </View>
-                <View className="flex-row items-center mb-2 gap-x-[9px]">
-                    <Close />    
-                    <Text>1 letra minúscula</Text>
-                </View>
-                <View className="flex-row items-center mb-2 gap-x-[9px]">
-                <Close />
-                    <Text>1 numeral</Text>
-                </View>
-                <View className="flex-row items-center gap-x-[9px]">
-                    <Close />    
-                    <Text>1 caractere especial (!@#$%ˆ&*()</Text>
-                </View>
-            </View>
+  return (
+    <SafeAreaView className="flex-1 bg-white px-5 pt-[38px]">
+      <View className="items-end mb-[10px]">
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Intro")}
+          className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center"
+        >
+          <Close />
+        </TouchableOpacity>
+      </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate('AccountDone')} className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center">
-                <Text className="font-inter-bold text-base">Criar conta </Text> 
-            </TouchableOpacity>
+      <Logo />
 
-            <Text className="text-center mt-8">Ao criar sua conta no Meu Desafio você concorda 
-            com os <Text className="font-inter-bold text-sm underline">Termos de serviço
-            </Text> e <Text className="font-inter-bold text-sm underline">Politica de Privacidade</Text>
-            </Text>   
-        </SafeAreaView>
-    )
+      <Text className="font-inter-bold mt-4 text-2xl">Crie uma senha</Text>
+
+      <Text className="font-inter-bold text-base mt-8">Senha</Text>
+      <TextInput
+        className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
+        onChange={handleTextChange}
+        value={password}
+        secureTextEntry
+      />
+      <Text className="mt-1 text-[#34A853] text-sm font-inter-bold">
+        {criteria.length && criteria.uppercase && criteria.lowercase && criteria.number && criteria.specialChar ? "Senha segura!" : null}
+      </Text>
+
+      <View className="p-4 border-[1px] border-[#D9D9D9] mt-8 rounded-[4px]">
+        <Text className="font-inter-bold text-sm mb-[10px]">
+          Sua senha deve conter:
+        </Text>
+        <View className="flex-row items-center mb-2 gap-x-[9px]">
+          {criteria.length ? <CheckGreen /> : <Close />}
+          <Text
+            className={CriteriaStyles({
+              intent: criteria.length == false ? "error" : null,
+            })}
+          >
+            Mínimo de 8 caracteres
+          </Text>
+        </View>
+        <View className="flex-row items-center mb-2 gap-x-[9px]">
+          {criteria.uppercase ? <CheckGreen /> : <Close />}
+          <Text
+            className={CriteriaStyles({
+              intent: criteria.uppercase == false ? "error" : null,
+            })}
+          >
+            1 letra maiúscula
+          </Text>
+        </View>
+        <View className="flex-row items-center mb-2 gap-x-[9px]">
+          {criteria.lowercase ? <CheckGreen /> : <Close />}
+          <Text
+            className={CriteriaStyles({
+              intent: criteria.lowercase == false ? "error" : null,
+            })}
+          >
+            1 letra minúscula
+          </Text>
+        </View>
+        <View className="flex-row items-center mb-2 gap-x-[9px]">
+          {criteria.number ? <CheckGreen /> : <Close />}
+          <Text
+            className={CriteriaStyles({
+              intent: criteria.number == false ? "error" : null,
+            })}
+          >
+            1 numeral
+          </Text>
+        </View>
+        <View className="flex-row items-center gap-x-[9px]">
+          {criteria.specialChar ? <CheckGreen /> : <Close />}
+          <Text
+            className={CriteriaStyles({
+              intent: criteria.specialChar == false ? "error" : null,
+            })}
+          >
+            1 caractere especial (!@#$%ˆ&*()
+          </Text>
+        </View>
+      </View>
+
+      <View className="mt-8">
+         <Text className="font-inter-bold text-base">
+            Redigite sua senha
+         </Text>   
+         <TextInput
+            className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
+            onChangeText={(e) => setPassword2(e)}
+            value={password2}
+            secureTextEntry
+        />
+        <Text className="text-[#EB4335] font-inter-bold text-sm mt-2">É necessario redigitar a senha igual.</Text>   
+
+      </View>      
+
+
+
+
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("AccountDone")}
+        className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center"
+      >
+        <Text className="font-inter-bold text-base">Criar conta </Text>
+      </TouchableOpacity>
+
+      <Text className="text-center mt-8">
+        Ao criar sua conta no Meu Desafio você concorda com os{" "}
+        <Text className="font-inter-bold text-sm underline">
+          Termos de serviço
+        </Text>{" "}
+        e{" "}
+        <Text className="font-inter-bold text-sm underline">
+          Politica de Privacidade
+        </Text>
+      </Text>
+    </SafeAreaView>
+  );
 }
+

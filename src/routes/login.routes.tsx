@@ -15,7 +15,7 @@ export default function LoginRoutes() {
             screenOptions={{
                 headerShown: false
             }}
-            initialRouteName="Intro"
+            initialRouteName="CreatePassword"
         >
             <App.Screen name="Intro" component={Intro} />
             <App.Screen name="Login" component={Login} />
