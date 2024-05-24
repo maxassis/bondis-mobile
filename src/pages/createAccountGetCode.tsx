@@ -13,6 +13,15 @@ import Logo from "../../assets/logo2.svg";
 import Arrow from "../../assets/arrow-right.svg";
 import Refresh from "../../assets/refresh.svg";
 import { useNavigation } from "@react-navigation/native";
+import { cva } from "class-variance-authority";
+
+const buttonDisabled = cva("h-[52px] flex-row bg-bondis-green mt-auto rounded-full justify-center items-center", {
+  variants: {
+    intent: {
+      disabled: "opacity-50",
+    },
+  },
+});
 
 export default function CreateAccountGetCode({ route }: any) {
   const [timeLeft, setTimeLeft] = useState<number>(0); // Inicialmente 0
@@ -92,7 +101,6 @@ export default function CreateAccountGetCode({ route }: any) {
     }
   };  
   
-
   return (
     <SafeAreaView className="flex-1 bg-white px-5 pt-[38px] pb-8">
       <View className="items-end mb-[10px]">
@@ -155,7 +163,11 @@ export default function CreateAccountGetCode({ route }: any) {
 
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
-        className="h-[52px] flex-row bg-bondis-green mt-auto rounded-full justify-center items-center"
+        // className="h-[52px] flex-row bg-bondis-green mt-auto rounded-full justify-center items-center" 
+        disabled={isActive}
+        className={buttonDisabled({
+          intent: isActive  ? "disabled" : null,
+        })}
       >
         <Text className="font-inter-bold text-base">Proximo </Text>
         <Arrow />

@@ -8,7 +8,7 @@ export default function AccountDone() {
     return(
         <SafeAreaView className="flex-1 bg-white px-5 pt-[38px]">
             <View className="items-end mb-[10px]">
-                <TouchableOpacity className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
+                <TouchableOpacity onPress={() => navigation.navigate('Login')} className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
                     <Close />
                 </TouchableOpacity>
             </View>
@@ -17,7 +17,7 @@ export default function AccountDone() {
 
             <Text className="text-sm text-[#565656] mt-8">bora começar um desafio?</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate('CreatePassword')} className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center">
+            <TouchableOpacity onPress={() => navigation.navigate('Login')} className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center">
                 <Text className="font-inter-bold text-base">Bora 💪</Text> 
             </TouchableOpacity>  
         </SafeAreaView>    

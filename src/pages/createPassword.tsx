@@ -10,6 +10,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
   KeyboardAvoidingView,
+  Alert
 } from "react-native";
 import { cva } from "class-variance-authority";
 import Close from "../../assets/Close.svg";
@@ -36,6 +37,14 @@ const PassStrong = cva("mt-1 text-[#34A853] text-sm font-inter-bold", {
   variants: {
     intent: {
       error: "text-[#EB4335]",
+    },
+  },
+});
+
+const buttonDisabled = cva("h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center", {
+  variants: {
+    intent: {
+      disabled: "opacity-50",
     },
   },
 });
@@ -77,30 +86,35 @@ export default function CreatePassword({ route }: any) {
     validatePassword(event.nativeEvent.text);
   };
 
-  function reqCreatePassword() {
-    console.log("entrou na função");
+ async function reqCreatePassword() {
+    if (password !== password2) return
     
-    if (password === password2) {
-      fetch("http://172.22.0.1:3000/users", {
+    try {
+      const response = await fetch("http://172.22.0.1:3000/users", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ name, email, password }),
-      })
-      .then(r => r.json())
-      .then(r => {
-        
-        if(!r.ok) {
-          throw new Error(r.message);
-        }
-
-        navigation.navigate("AccountDone")
-      })
-      .catch(e => console.log(e));
+      });
+      // const data = await response.json();
+      // console.log(data);
       
+      if (!response.ok) {   
+           if(response.statusText === "User already exists") {
+             Alert.alert("Usuário ja existe", "", [
+               {
+                 text: "Ok",
+                 style: "cancel",
+               },
+             ]);
+           }
+          throw new Error(response.statusText);
+      }    
+      navigation.navigate("AccountDone");
+
+    } catch (error) {
+      console.error(error);
     }
   }
-
-
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-white" behavior="padding">
@@ -221,15 +235,17 @@ export default function CreatePassword({ route }: any) {
                 secureTextEntry
               />
               <Text className="text-[#EB4335] font-inter-bold text-sm mt-2">
-                É necessario redigitar a senha igual.
+                {password2 === password ? null : "As senhas devem ser iguais"}
               </Text>
             </View>
           ) : null}
 
           <TouchableOpacity
-            // onPress={() => navigation.navigate("AccountDone")}
             onPress={reqCreatePassword}
-            className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center"
+            // className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center"
+            className={buttonDisabled({
+              intent: password === password2  ? null : "disabled",
+            })}
           >
             <Text className="font-inter-bold text-base">Criar conta </Text>
           </TouchableOpacity>
