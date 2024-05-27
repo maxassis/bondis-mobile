@@ -40,7 +40,7 @@ export default function App() {
       {/* <Login /> */}
       {/* <Intro /> */}
       <Routes />
-      <StatusBar style="light" backgroundColor="#000"/>    
+      <StatusBar style="light" translucent={false} backgroundColor="#000"/>    
     </GestureHandlerRootView>
     </NavigationContainer>
  
