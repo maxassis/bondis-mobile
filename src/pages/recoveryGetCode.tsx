@@ -91,6 +91,8 @@ export default function RecoveryGetCode({ route }: any) {
         body: JSON.stringify({ code, email }),
       });
       const data: { message: string } = await response.json();
+      console.log(data);
+      
 
       if (!response.ok) {
         Alert.alert("Código invalido", "", [
@@ -104,12 +106,12 @@ export default function RecoveryGetCode({ route }: any) {
       }
 
       // console.log("codigo correto");
-      navigation.navigate("CreatePassword", { email });
+      navigation.navigate("RecoveryCreatePassword", { email });
     } catch (error) {
       console.error(error);
     }
 
-    navigation.navigate("CreatePassword", { email })
+    // navigation.navigate("RecoveryCreatePassword", { email })
   };
 
   return (

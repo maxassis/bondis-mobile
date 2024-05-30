@@ -87,16 +87,18 @@ export default function RecoveryCreatePassword({ route }: any) {
   };
 
  async function reqCreatePassword() {
+    console.log(password, password2);
+    
     if (password !== password2) return
     
     try {
-      const response = await fetch("http://172.22.0.1:3000/users", {
-        method: "POST",
+      const response = await fetch("http://172.22.0.1:3000/users/changepassword", {
+        method: "PATCH",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, new_password: password }),
       });
-      // const data = await response.json();
-      // console.log(data);
+      const data = await response.json();
+      console.log(data);
       
       if (!response.ok) {   
            if(response.statusText === "User already exists") {
@@ -242,12 +244,11 @@ export default function RecoveryCreatePassword({ route }: any) {
 
           <TouchableOpacity
             onPress={reqCreatePassword}
-            // className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center"
             className={buttonDisabled({
               intent: password === password2  ? null : "disabled",
             })}
           >
-            <Text className="font-inter-bold text-base">Criar conta </Text>
+            <Text className="font-inter-bold text-base">Criar nova senha</Text>
           </TouchableOpacity>
 
           <Text className="text-center mt-8">
