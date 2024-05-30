@@ -97,8 +97,8 @@ export default function RecoveryCreatePassword({ route }: any) {
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ email, new_password: password }),
       });
-      const data = await response.json();
-      console.log(data);
+      // const data = await response.json();
+      // console.log(data);
       
       if (!response.ok) {   
            if(response.statusText === "User already exists") {

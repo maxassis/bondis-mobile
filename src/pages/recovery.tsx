@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   TextInput,
+  Alert
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Close from "../../assets/Close.svg";
@@ -20,9 +21,34 @@ export default function Recovery() {
   } = useForm<{ email: string }>();
 
   const onSubmit = async ({ email }: { email: string }) => {
-    navigation.navigate('RecoveryCode', {    
-      email
-    });
+
+    try {
+      const response = await fetch("http://172.22.0.1:3000/checkemail", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      console.log(data);
+      
+      if (!response.ok) {   
+             Alert.alert("Email não cadastrado", "", [
+               {
+                 text: "Ok",
+                 style: "cancel",
+               },
+             ]);
+           
+          throw new Error(response.statusText);
+      }    
+
+      navigation.navigate('RecoveryCode', {    
+        email
+      });
+
+    } catch (error) {
+      console.error(error);
+    }    
   };
 
   return (
@@ -47,7 +73,6 @@ export default function Recovery() {
         </Text>
 
         <Text className="font-inter-bold text-base mt-8">E-mail</Text>
-        {/* <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4" />   */}
         <Controller
           control={control}
           name="email"
