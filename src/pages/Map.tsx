@@ -2,7 +2,13 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 // import { StatusBar } from "expo-status-bar";
 import MapView, { Marker } from "react-native-maps";
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -11,8 +17,9 @@ import {
   LocationAccuracy,
 } from "expo-location";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { LinearGradient } from "expo-linear-gradient";
 import Bar from "../../assets/Bar.svg";
-import Left from "../../assets/arrow-left.svg"
+import Left from "../../assets/arrow-left.svg";
 import { Image } from "react-native";
 import Winner from "../../assets/winner.svg";
 import Terceiro from "../../assets/terceira.svg";
@@ -27,7 +34,7 @@ export default function Map() {
 
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["20%", "85%" ,"100%"], []);
+  const snapPoints = useMemo(() => ["20%", "85%", "100%"], []);
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
@@ -62,7 +69,6 @@ export default function Map() {
 
   return (
     <View className="flex-1 bg-white justify-center items-center relative">
-      
       {location && (
         <MapView
           className="flex-1 w-full"
@@ -78,11 +84,13 @@ export default function Map() {
         </MapView>
       )}
 
-      <TouchableOpacity onPress={() => navigation.navigate('Profile')} className="absolute top-[38px] left-[13px] h-[43px] 
-      w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-          <Left  />                    
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Profile")}
+        className="absolute top-[38px] left-[13px] h-[43px] 
+      w-[43px] rounded-full bg-bondis-text-gray justify-center items-center"
+      >
+        <Left />
       </TouchableOpacity>
-        
 
       <BottomSheet
         ref={bottomSheetRef}
@@ -147,7 +155,10 @@ export default function Map() {
                   <Text className="text-sm font-inter-bold">3</Text>
                 </View>
 
-                <View className="w-full h-[140px] relative bg-green-200  justify-end items-center">
+                <LinearGradient
+                  colors={["#12FF55", "white"]}
+                  className="w-full h-[140px] relative justify-end items-center"
+                >
                   <View className="absolute top-[-50px]">
                     <Terceiro />
                   </View>
@@ -160,11 +171,11 @@ export default function Map() {
                   <Text className="font-inter-regular text-xs text-[#757575] mb-[10px]">
                     25:15
                   </Text>
-                </View>
+                </LinearGradient>
               </View>
               <View className="w-[87px] h-[287px] items-center justify-between">
                 <Winner />
-                <View className="bg-green-400 w-full h-[200px] relative items-center justify-end">
+                <LinearGradient colors={["#12FF55", "white"]} className="w-full h-[200px] relative items-center justify-end">
                   <View className="absolute top-[-50px]">
                     <Primeiro />
                   </View>
@@ -177,14 +188,14 @@ export default function Map() {
                   <Text className="font-inter-regular text-xs text-[#757575] mb-[10px]">
                     25:15
                   </Text>
-                </View>
+                </LinearGradient>
               </View>
               <View className="w-[87px] h-[260px] items-center justify-between ">
                 <View className="rounded-full mb-2 justify-center items-center w-[35.76px] h-[35.76px] bg-bondis-text-gray">
                   <Text className="text-sm font-inter-bold">2</Text>
                 </View>
 
-                <View className="relative w-full h-[170px] bg-green-300 justify-end items-center">
+                <LinearGradient colors={["#12FF55", "white"]} className="relative w-full h-[170px] justify-end items-center">
                   <View className="absolute top-[-50px] ">
                     <Segundo />
                   </View>
@@ -197,7 +208,7 @@ export default function Map() {
                   <Text className="font-inter-regular text-xs text-[#757575] mb-[10px]">
                     25:15
                   </Text>
-                </View>
+                </LinearGradient>
               </View>
             </View>
 
@@ -208,7 +219,6 @@ export default function Map() {
               <UserTime />
               <UserTime />
             </View>
-
           </SafeAreaView>
         </BottomSheetScrollView>
       </BottomSheet>
