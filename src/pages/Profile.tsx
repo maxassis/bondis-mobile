@@ -1,5 +1,7 @@
+import { useRef, useMemo } from "react";
 import { SafeAreaView, Text, View, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Logo from "../../assets/logo-white.svg"
 import Settings from "../../assets/settings.svg";
 import { StatusBar } from "expo-status-bar";
@@ -8,9 +10,13 @@ import Plus from "../../assets/plus.svg"
 
 export default function Profile() {
   const navigation = useNavigation<any>();
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ["30%"], []);
+
+  const handleClosePress = () => bottomSheetRef.current?.expand();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="flex-1 bg-white">
       <View className="h-[325px] bg-bondis-black">
         <View className="flex-row h-[92px] justify-between mx-4 mt-[35px]">
           <Logo />
@@ -63,13 +69,37 @@ export default function Profile() {
             <Map />
         </TouchableOpacity>
 
-        <View className="rounded-full bg-bondis-green absolute w-16 h-16 justify-center items-center right-0 bottom-2">
+        <TouchableOpacity onPress={() => bottomSheetRef.current?.expand()} className="rounded-full bg-bondis-green absolute w-16 h-16 justify-center items-center right-0 bottom-2">
           <Plus />
-        </View>
-
+        </TouchableOpacity>
       </View>
 
+
       <StatusBar style="light" translucent={false} backgroundColor="#252823" />
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        index={-1}
+        enablePanDownToClose
+      >
+        <BottomSheetView className="flex-1">
+          <Text className="font-inter-bold mt-[10px] text-base mx-5 mb-4">Adicione um atividade</Text>
+          <View className="h-[153px] mx-5">
+              <View className="h-[33.33%] justify-center items-center border-b-[0.2px] border-b-gray-400">
+                <Text>Via Strava</Text>
+              </View>
+              <View className="h-[33.33%] justify-center items-center border-b-[0.2px] border-b-gray-400">
+                <Text>Via Apple Saúde</Text>
+              </View>
+              <View className="h-[33.33%] justify-center items-center border-b-[0.2px] border-b-gray-400">
+              <Text>Cadastrar manualmente</Text>
+              </View>
+          </View>
+        </BottomSheetView>
+        
+      </BottomSheet> 
     </SafeAreaView>
   );
 }
+
