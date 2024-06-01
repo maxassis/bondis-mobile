@@ -82,6 +82,9 @@ export default function Profile() {
         snapPoints={snapPoints}
         index={-1}
         enablePanDownToClose
+        backgroundStyle={{
+          borderRadius: 20,
+        }}
       >
         <BottomSheetView className="flex-1">
           <Text className="font-inter-bold mt-[10px] text-base mx-5 mb-4">Adicione um atividade</Text>

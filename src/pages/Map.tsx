@@ -95,7 +95,11 @@ export default function Map() {
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={snapPoints}
-        backgroundStyle={{ backgroundColor: "#fff" }}
+        backgroundStyle={{ 
+          backgroundColor: "#fff",
+          borderRadius: 20
+        }}
+      
       >
         <BottomSheetScrollView>
           <SafeAreaView className="mx-5">
