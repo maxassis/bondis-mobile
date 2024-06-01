@@ -10,6 +10,7 @@ import RecoveryGetCode from '../pages/recoveryGetCode';
 import RecoveryCreatePassword from '../pages/recoveryCreatePassword';
 import RecoverySuccess from '../pages/recoverySuccess';
 import WizardWelcome from '../pages/wizardWelcome';
+import WizardNotification from '../pages/wizardNotification';
 
 const App = createNativeStackNavigator()
 
@@ -19,7 +20,7 @@ export default function LoginRoutes() {
             screenOptions={{
                 headerShown: false
             }}
-            initialRouteName="WizardWelcome"
+            initialRouteName="WizardNotification"
         >
             <App.Screen name="Intro" component={Intro} />
             <App.Screen name="Login" component={Login} />
@@ -32,6 +33,7 @@ export default function LoginRoutes() {
             <App.Screen name="RecoveryCreatePassword" component={RecoveryCreatePassword} />
             <App.Screen name="RecoverySuccess" component={RecoverySuccess} />
             <App.Screen name="WizardWelcome" component={WizardWelcome} />
+            <App.Screen name="WizardNotification" component={WizardNotification} />
 
             
         </App.Navigator>
