@@ -13,6 +13,7 @@ import WizardWelcome from '../pages/wizardWelcome';
 import WizardNotification from '../pages/wizardNotification';
 import WizardLocation from '../pages/wizardLocation';
 import WizardSincronization from '../pages/wizardSincronization';
+import Connections from '../pages/connections';
 
 const App = createNativeStackNavigator()
 
@@ -22,7 +23,7 @@ export default function LoginRoutes() {
             screenOptions={{
                 headerShown: false
             }}
-            initialRouteName="WizardSincronization"
+            initialRouteName="Connections"
         >
             <App.Screen name="Intro" component={Intro} />
             <App.Screen name="Login" component={Login} />
@@ -38,6 +39,8 @@ export default function LoginRoutes() {
             <App.Screen name="WizardNotification" component={WizardNotification} />
             <App.Screen name="WizardLocation" component={WizardLocation} />
             <App.Screen name="WizardSincronization" component={WizardSincronization} />
+            <App.Screen name="Connections" component={Connections} />
+
 
             
         </App.Navigator>
