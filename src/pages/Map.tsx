@@ -1,10 +1,8 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
-// import { StatusBar } from "expo-status-bar";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   SafeAreaView,
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -26,6 +24,7 @@ import Terceiro from "../../assets/terceira.svg";
 import Segundo from "../../assets/segundo.svg";
 import Primeiro from "../../assets/primeiro.svg";
 import UserTime from "../components/userTime";
+import { markers } from "../markers";
 
 export default function Map() {
   const navigation = useNavigation<any>();
@@ -73,14 +72,34 @@ export default function Map() {
         <MapView
           className="flex-1 w-full"
           ref={mapRef}
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
+          provider={PROVIDER_GOOGLE}
+          // showsUserLocation
+          showsMyLocationButton
+          // onRegionChangeComplete={(r) => console.log(r)}
+          // initialRegion={{
+          //   latitude: location.coords.latitude,
+          //   longitude: location.coords.longitude,
+          //   latitudeDelta: 0.0922,
+          //   longitudeDelta: 0.0421,
+          // }}
         >
-          <Marker coordinate={location.coords} />
+
+          {markers.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+              title={marker.name}
+            >
+                <View className="w-[55px] h-[55px] rounded-full bg-bondis-green justify-center items-center">
+                    <Image source={{ uri: marker.image }} className="w-[47px] h-[47px] rounded-full" />
+                </View>
+            </Marker>  
+          ))}
+
+          {/* <Marker coordinate={location.coords} /> */}
         </MapView>
       )}
 
@@ -99,7 +118,7 @@ export default function Map() {
           backgroundColor: "#fff",
           borderRadius: 20
         }}
-      
+        index={-1}
       >
         <BottomSheetScrollView>
           <SafeAreaView className="mx-5">
