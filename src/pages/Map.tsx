@@ -14,6 +14,8 @@ import {
   watchPositionAsync,
   LocationAccuracy,
 } from "expo-location";
+import { decode } from "@mapbox/polyline";
+import { Polyline } from "react-native-maps";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import Bar from "../../assets/Bar.svg";
@@ -26,7 +28,44 @@ import Primeiro from "../../assets/primeiro.svg";
 import UserTime from "../components/userTime";
 import { markers } from "../markers";
 
+const tokyoRegion = {
+  latitude: 35.6762,
+  longitude: 139.6503,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
+};
+const chibaRegion = {
+  latitude: 35.6074,
+  longitude: 140.1065,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
+};
+
+const getDirections = async (startLoc: any, destinationLoc: any) => {
+  try {
+    const KEY = process.env.EXPO_PUBLIC_GOOGLE_API; //put your API key here.
+    //otherwise, you'll have an 'unauthorized' error.
+    let resp = await fetch(
+      `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${KEY}`
+    );
+    let respJson = await resp.json();
+    let points = decode(respJson.routes[0].overview_polyline.points);
+    console.log(points);
+    let coords = points.map((point, index) => {
+      return {
+        latitude: point[0],
+        longitude: point[1]
+      };
+    });
+    return coords;
+  } catch (error) {
+    return error;
+  }
+};
+
+
 export default function Map() {
+  const [coords, setCoords] = useState<any>([]);
   const navigation = useNavigation<any>();
 
   const [location, setLocation] = useState<LocationObject | null>(null);
@@ -66,25 +105,33 @@ export default function Map() {
     );
   }, []);
 
+  useEffect(() => {
+    //fetch the coordinates and then store its value into the coords Hook.
+    getDirections("-22.8846,-42.0066", "-22.8176,-42.0845")
+      .then(coords => setCoords(coords))
+      .catch(err => console.log("Something went wrong"));
+  }, []);
+
   return (
     <View className="flex-1 bg-white justify-center items-center relative">
       {location && (
         <MapView
           className="flex-1 w-full"
-          ref={mapRef}
+          // ref={mapRef}
           provider={PROVIDER_GOOGLE}
           // showsUserLocation
           showsMyLocationButton
           // onRegionChangeComplete={(r) => console.log(r)}
-          // initialRegion={{
-          //   latitude: location.coords.latitude,
-          //   longitude: location.coords.longitude,
-          //   latitudeDelta: 0.0922,
-          //   longitudeDelta: 0.0421,
-          // }}
-        >
+          initialRegion={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          // initialRegion={tokyoRegion}
+         >
 
-          {markers.map((marker, index) => (
+          {/* {markers.map((marker, index) => (
             <Marker
               key={index}
               coordinate={{
@@ -97,9 +144,33 @@ export default function Map() {
                     <Image source={{ uri: marker.image }} className="w-[47px] h-[47px] rounded-full" />
                 </View>
             </Marker>  
-          ))}
+          ))} */}
+        {/* 
+          <Polyline
+            coordinates={[
+              { latitude: -22.8846, longitude: -42.0066 },
+              { latitude: -22.8176, longitude: -42.0845 },
+            ]}
+            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+            strokeWidth={2} 
+          /> */}
+          {coords.length > 0 && <Polyline coordinates={coords} strokeWidth={3} />}
 
-          {/* <Marker coordinate={location.coords} /> */}
+
+
+
+
+          <Marker coordinate={
+            {
+              latitude: -22.8846,
+              longitude: -42.0066
+            }
+          } 
+          >
+            <View className="w-[55px] h-[55px] rounded-full bg-bondis-green justify-center items-center">
+                    <Image source={{ uri: "https://iijythvtsrfruihwseua.supabase.co/storage/v1/object/public/Meu%20desafio/file3.png" }} className="w-[47px] h-[47px] rounded-full" />
+            </View>
+          </Marker>  
         </MapView>
       )}
 
