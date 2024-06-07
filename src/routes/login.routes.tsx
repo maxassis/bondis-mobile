@@ -41,10 +41,7 @@ export default function LoginRoutes() {
             <App.Screen name="WizardLocation" component={WizardLocation} />
             <App.Screen name="WizardSincronization" component={WizardSincronization} />
             <App.Screen name="Connections" component={Connections} />
-            <App.Screen name="Teste" component={Teste} />
 
-
-            
         </App.Navigator>
     )
 }

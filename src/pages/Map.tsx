@@ -189,7 +189,8 @@ export default function Map() {
           backgroundColor: "#fff",
           borderRadius: 20
         }}
-        index={-1}
+        // index={-1}
+        enablePanDownToClose
       >
         <BottomSheetScrollView>
           <SafeAreaView className="mx-5">
