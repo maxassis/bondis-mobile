@@ -14,7 +14,6 @@ import WizardNotification from '../pages/wizardNotification';
 import WizardLocation from '../pages/wizardLocation';
 import WizardSincronization from '../pages/wizardSincronization';
 import Connections from '../pages/connections';
-import RecoveryDone from '../pages/recoveryDone';
 
 const App = createNativeStackNavigator()
 

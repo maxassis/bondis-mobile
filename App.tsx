@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
-import { Text } from 'react-native';
+import { Text, Platform } from 'react-native';
 import Maps from './src/pages/Map';
 import Profile from './src/pages/Profile';
 import Login from './src/pages/Login'
@@ -40,7 +40,7 @@ export default function App() {
       {/* <Login /> */}
       {/* <Intro /> */}
       <Routes />
-      <StatusBar style="light" translucent={false} backgroundColor="#000"/>    
+      <StatusBar style={Platform.OS === "ios" ? "dark" : "light"} translucent={false} backgroundColor="#000"/>    
     </GestureHandlerRootView>
     </NavigationContainer>
  
