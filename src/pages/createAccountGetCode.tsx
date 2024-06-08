@@ -102,7 +102,8 @@ export default function CreateAccountGetCode({ route }: any) {
   };  
   
   return (
-    <SafeAreaView className="flex-1 bg-white px-5 pt-[38px] pb-8">
+    <SafeAreaView className="flex-1 bg-white ">
+      <View className="px-5 pt-[38px] pb-8 flex-1">
       <View className="items-end mb-[10px]">
         <TouchableOpacity onPress={() => navigation.navigate("Intro")} className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
           <Close />
@@ -172,6 +173,7 @@ export default function CreateAccountGetCode({ route }: any) {
         <Text className="font-inter-bold text-base">Proximo </Text>
         <Arrow />
       </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }

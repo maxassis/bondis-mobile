@@ -9,7 +9,8 @@ import Close from "../../assets/Close.svg";
 
 export default function Connections() {
   return (
-    <SafeAreaView className="flex-1 bg-white pt-[35px] px-5">
+    <SafeAreaView className="flex-1 bg-white">
+      <View className=" pt-[35px] px-5">
       <View className="items-end mb-[10px]">
         <TouchableOpacity
           //   onPress={() => navigation.navigate("Intro")}
@@ -36,6 +37,7 @@ export default function Connections() {
         <TouchableOpacity className="w-[60px] h-[32px] bg-bondis-green justify-center items-center">
           <Text>Strava</Text>
         </TouchableOpacity>
+      </View>
       </View>
     </SafeAreaView>
   );

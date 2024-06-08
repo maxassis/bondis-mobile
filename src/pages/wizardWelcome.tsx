@@ -6,7 +6,8 @@ import Podium from "../../assets/podium.svg";
 
 export default function WizardWelcome() {
   return (
-    <SafeAreaView className="flex-1 bg-white pt-12 px-5 pb-8">
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="pt-12 px-5 pb-8 flex-1">
       <View className="h-[130px] pt-8 items-center">
         <View className="w-2/12">
           <Logo />
@@ -63,7 +64,7 @@ export default function WizardWelcome() {
       </TouchableOpacity>  
 
 
-
+      </View>
     </SafeAreaView>
   );
 }

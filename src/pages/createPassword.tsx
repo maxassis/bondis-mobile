@@ -119,7 +119,8 @@ export default function CreatePassword({ route }: any) {
   return (
     <KeyboardAvoidingView className="flex-1 bg-white" behavior="padding">
       <ScrollView className="flex-1 bg-white" overScrollMode="never">
-        <SafeAreaView className="flex-1 bg-white px-5 pt-[38px]">
+        <SafeAreaView className="flex-1 bg-white ">
+          <View className="px-5 pt-[38px]">
           <View className="items-end mb-[10px]">
             <TouchableOpacity
               onPress={() => navigation.navigate("Intro")}
@@ -260,6 +261,7 @@ export default function CreatePassword({ route }: any) {
               Politica de Privacidade
             </Text>
           </Text>
+          </View>
         </SafeAreaView>
       </ScrollView>
     </KeyboardAvoidingView>

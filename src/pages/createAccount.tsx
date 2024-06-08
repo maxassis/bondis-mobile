@@ -37,7 +37,8 @@ export default function CreateAccount() {
   };
 
   return (
-    <SafeAreaView className="pt-[38px] px-5 bg-white flex-1">
+    <SafeAreaView className=" bg-white flex-1">
+      <View className="pt-[38px] px-5">
       <View className="items-end mb-[10px]">
         <TouchableOpacity
           onPress={() => navigation.navigate("Intro")}
@@ -115,6 +116,7 @@ export default function CreateAccount() {
         <Google />
         <Facebook />
         <Apple />
+      </View>
       </View>
     </SafeAreaView>
   );

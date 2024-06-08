@@ -52,7 +52,8 @@ export default function Recovery() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-5 pt-[38px]">
+    <SafeAreaView className="flex-1 bg-white">
+      <View className=" px-5 pt-[38px]">
       <View className="items-end mb-[10px]">
         <TouchableOpacity
           onPress={() => navigation.navigate("Login")}
@@ -99,6 +100,7 @@ export default function Recovery() {
         >
           <Text className="font-inter-bold text-base">Recuperar senha</Text>
         </TouchableOpacity>
+      </View>
       </View>
     </SafeAreaView>
   );

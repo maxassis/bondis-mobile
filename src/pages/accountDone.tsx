@@ -6,7 +6,8 @@ export default function AccountDone() {
     const navigation = useNavigation<any>();
 
     return(
-        <SafeAreaView className="flex-1 bg-white px-5 pt-[38px]">
+        <SafeAreaView className="flex-1 bg-white ">
+            <View className="px-5 pt-[38px]">
             <View className="items-end mb-[10px]">
                 <TouchableOpacity onPress={() => navigation.navigate('Login')} className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
                     <Close />
@@ -19,7 +20,8 @@ export default function AccountDone() {
 
             <TouchableOpacity onPress={() => navigation.navigate('Login')} className="h-[52px] flex-row bg-bondis-green mt-8 rounded-full justify-center items-center">
                 <Text className="font-inter-bold text-base">Bora 💪</Text> 
-            </TouchableOpacity>  
+            </TouchableOpacity> 
+            </View> 
         </SafeAreaView>    
     )
 }

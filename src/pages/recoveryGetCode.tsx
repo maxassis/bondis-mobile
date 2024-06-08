@@ -115,7 +115,8 @@ export default function RecoveryGetCode({ route }: any) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-5 pt-[38px] pb-8">
+    <SafeAreaView className="flex-1 bg-white ">
+      <View className="px-5 pt-[38px] pb-8 flex-1">
       <View className="items-end mb-[10px]">
         <TouchableOpacity
           onPress={() => navigation.navigate("Intro")}
@@ -203,7 +204,7 @@ export default function RecoveryGetCode({ route }: any) {
         <Text className="font-inter-bold text-base">Proximo </Text>
         <Arrow />
       </TouchableOpacity>
-
+      </View>
     </SafeAreaView>
   );
 }

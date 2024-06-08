@@ -30,7 +30,8 @@ export default function MenuConfigurations() {
     }
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-5 pb-4 pt-[38px]">
+    <SafeAreaView className="flex-1 bg-white ">
+      <View className="px-5 pb-4 pt-[38px] flex-1">
       <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
         <Left onPress={() => navigation.navigate('Profile')} />
       </View>
@@ -59,8 +60,8 @@ export default function MenuConfigurations() {
             <Text className="text-[#EB4335] text-base font-inter-bold">Sair</Text>
         </TouchableOpacity>
         <Text className="text-center text-sm font-inter-regular text-bg-gray-dark">Versão 1.0</Text>
-    </View>  
-
+    </View> 
+    </View> 
     </SafeAreaView>
   );
 }

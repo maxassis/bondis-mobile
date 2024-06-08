@@ -8,7 +8,8 @@ export default function RecoverySuccess() {
   const navigation = useNavigation<any>();
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-5 pt-[38px] pb-8">
+    <SafeAreaView className="flex-1 bg-white ">
+      <View className="px-5 pt-[38px] pb-8 flex-1">
       <View className="items-end mb-[10px]">
         <TouchableOpacity
           onPress={() => navigation.navigate("Login")}
@@ -29,6 +30,7 @@ export default function RecoverySuccess() {
         <TouchableOpacity onPress={() => navigation.navigate("Login")} className="w-[335px] h-[52px] border-[0.5px] border-[#D9D9D9] rounded-full mt-[10px] justify-center items-center">
           <Text className="font-inter-bold text-base">Entrar</Text>
         </TouchableOpacity>
+      </View>
       </View>
     </SafeAreaView>
   );
