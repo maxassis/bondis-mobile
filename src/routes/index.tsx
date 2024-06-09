@@ -7,6 +7,6 @@ import tokenExists from '../store/auth';
 export default function Routes() {
    const authStore = tokenExists((state) => state.token)
 
-   return authStore ? <AppRoutes /> : <LoginRoutes />
-   
+   // return authStore ? <AppRoutes /> : <LoginRoutes />
+   return <AppRoutes />
 }

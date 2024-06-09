@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { Text, Platform } from 'react-native';
 import Maps from './src/pages/Map';
-import Profile from './src/pages/Profile';
+import Profile from './src/pages/profile';
 import Login from './src/pages/Login'
 import { StatusBar } from 'expo-status-bar';
 import { Inter_700Bold, Inter_400Regular, useFonts } from '@expo-google-fonts/inter'
