@@ -12,7 +12,7 @@ import Left from "../../assets/arrow-left.svg";
 import { useNavigation } from "@react-navigation/native";
 import User from "../../assets/user.svg";
 import { MaskedTextInput } from "react-native-mask-text";
-import * as ImagePicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileEdit() {
   const navigation = useNavigation<any>();
@@ -20,15 +20,19 @@ export default function ProfileEdit() {
   const [unMaskedValue, setUnmaskedValue] = useState("");
   const [image, setImage] = useState("");
 
-  const handleImagePicker = async () => {
-  const result = await ImagePicker.getDocumentAsync({
-      type: ["image/*"],
-    })
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+      base64: true
+    });
 
-  if(!result.canceled) {
-    setImage(result.assets[0].uri)
-  }  
-  }
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
 
   return (
@@ -43,7 +47,7 @@ export default function ProfileEdit() {
             Mantenha seu perfil atualizado
           </Text>
 
-          <TouchableOpacity onPress={handleImagePicker} className="h-[94px] w-[94px] mt-8 relative">
+          <TouchableOpacity onPress={pickImage} className="h-[94px] w-[94px] mt-8 relative">
             {image ? <Image source={{uri: image}} className="w-[94px] h-[94px] rounded-full" /> 
               :
              <User />  
