@@ -14,6 +14,12 @@ import User from "../../assets/user.svg";
 import { MaskedTextInput } from "react-native-mask-text";
 import * as ImagePicker from 'expo-image-picker';
 
+type File = {
+  type: string;
+  uri: string;
+  name: string;
+}
+
 export default function ProfileEdit() {
   const navigation = useNavigation<any>();
   const [maskedValue, setMaskedValue] = useState("");
@@ -21,19 +27,49 @@ export default function ProfileEdit() {
   const [image, setImage] = useState("");
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    let { assets, canceled } = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
       quality: 1,
-      base64: true
+      base64: true,
+      allowsMultipleSelection: false
     });
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
+    if (!canceled && assets) {
+      setImage(assets[0].uri);
 
+      const filename = assets[0].uri.split('/').pop();
+      const extend = filename!.split('.').pop();
+      
+      const formData = new FormData();
+      formData.append("file", JSON.parse(JSON.stringify({
+        name: filename,
+        uri: assets[0].uri,
+        type: 'image/' + extend
+      })));
+
+      try {
+        const response = await fetch("http://172.22.0.1:3000/users/uploadavatar", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'authorization': "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYm9uZGlzMiIsImVtYWlsIjoiYm9uZGlzMkB0ZXN0ZS5jb20iLCJpZCI6ImNsd3RnYTByYTAwMDBrdGo1bHliNXNwYjAiLCJpYXQiOjE3MTgwNTQ1ODAsImV4cCI6MTcyNTgzMDU4MH0.yxwg1ZnmpnrLeb_j38zlNN54cQnJ-7doudOq2MbtkdM"
+          },
+          body: formData,
+        });
+  
+        if (response.ok) {
+          // const responseData = await response.json();
+          // console.log('Upload successful', responseData);
+        } else {
+          console.error('Upload failed!', response.status);
+        }
+      } catch (error) {
+        console.error('Upload error', error);
+      }
+    } 
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
