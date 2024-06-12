@@ -43,11 +43,11 @@ export default function ProfileEdit() {
       const extend = filename!.split('.').pop();
       
       const formData = new FormData();
-      formData.append("file", JSON.parse(JSON.stringify({
+      formData.append("file", {
         name: filename,
         uri: assets[0].uri,
         type: 'image/' + extend
-      })));
+      } as any);
 
       try {
         const response = await fetch("http://172.22.0.1:3000/users/uploadavatar", {
@@ -60,8 +60,8 @@ export default function ProfileEdit() {
         });
   
         if (response.ok) {
-          // const responseData = await response.json();
-          // console.log('Upload successful', responseData);
+          const responseData = await response.json();
+          console.log('Upload successful', responseData);
         } else {
           console.error('Upload failed!', response.status);
         }
