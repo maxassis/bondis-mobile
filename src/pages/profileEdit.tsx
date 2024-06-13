@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   TextInput,
+  Alert
 } from "react-native";
 import Left from "../../assets/arrow-left.svg";
 import { useNavigation } from "@react-navigation/native";
@@ -19,6 +20,8 @@ type File = {
   uri: string;
   name: string;
 }
+
+const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB em bytes
 
 export default function ProfileEdit() {
   const navigation = useNavigation<any>();
@@ -37,7 +40,12 @@ export default function ProfileEdit() {
     });
 
     if (!canceled && assets) {
-      setImage(assets[0].uri);
+      const fileSize = assets[0].uri ? await getFileSize(assets[0].uri) : 0;
+
+      if (fileSize > MAX_FILE_SIZE) {
+        Alert.alert('Erro', 'O arquivo é muito grande. O tamanho máximo permitido é 3 MB.');
+        return;
+      } 
 
       const filename = assets[0].uri.split('/').pop();
       const extend = filename!.split('.').pop();
@@ -54,7 +62,7 @@ export default function ProfileEdit() {
           method: 'POST',
           headers: {
             'Content-Type': 'multipart/form-data',
-            'authorization': "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYm9uZGlzMiIsImVtYWlsIjoiYm9uZGlzMkB0ZXN0ZS5jb20iLCJpZCI6ImNsd3RnYTByYTAwMDBrdGo1bHliNXNwYjAiLCJpYXQiOjE3MTgwNTQ1ODAsImV4cCI6MTcyNTgzMDU4MH0.yxwg1ZnmpnrLeb_j38zlNN54cQnJ-7doudOq2MbtkdM"
+            'authorization': "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYm9uZGlzOCIsImVtYWlsIjoiYm9uZGlzOEB0ZXN0ZS5jb20iLCJpZCI6ImNseGNvdjlnMDAwMDBsbzF1cnUxdTFkNHYiLCJpYXQiOjE3MTgzMTY5NjMsImV4cCI6MTcyNjA5Mjk2M30.Ft24bhunWUzJARcGdCOeFR-DPMbOC-tqkz6klkhM_Ak"
           },
           body: formData,
         });
@@ -62,6 +70,7 @@ export default function ProfileEdit() {
         if (response.ok) {
           const responseData = await response.json();
           console.log('Upload successful', responseData);
+          setImage(assets[0].uri);
         } else {
           console.error('Upload failed!', response.status);
         }
@@ -69,6 +78,17 @@ export default function ProfileEdit() {
         console.error('Upload error', error);
       }
     } 
+  };
+
+  const getFileSize = async (uri: string) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      return blob.size;
+    } catch (error) {
+      console.error('Erro ao obter o tamanho do arquivo:', error);
+      return 0;
+    }
   };
 
   return (
