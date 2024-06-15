@@ -13,7 +13,7 @@ export default function Profile() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["30%"], []);
 
-  const handleClosePress = () => bottomSheetRef.current?.expand();
+  // const handleClosePress = () => bottomSheetRef.current?.expand();
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -88,14 +88,14 @@ export default function Profile() {
       >
         <BottomSheetView className="flex-1">
           <Text className="font-inter-bold mt-[10px] text-base mx-5 mb-4">Adicione um atividade</Text>
-          <View className="h-[153px] mx-5">
-              <View className="h-[33.33%] justify-center items-center border-b-[0.2px] border-b-gray-400">
+          <View className="mx-5">
+              <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
                 <Text>Via Strava</Text>
               </View>
-              <View className="h-[33.33%] justify-center items-center border-b-[0.2px] border-b-gray-400">
+              <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
                 <Text>Via Apple Saúde</Text>
               </View>
-              <View className="h-[33.33%] justify-center items-center border-b-[0.2px] border-b-gray-400">
+              <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Cadastrar manualmente</Text>
               </View>
           </View>
