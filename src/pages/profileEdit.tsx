@@ -39,11 +39,15 @@ export default function ProfileEdit() {
   const [gender, setGender] = useState("");
   const [sports, setSports] = useState("");
   const [unMaskedValue, setUnmaskedValue] = useState("");
-  const [initialSnapIndex, setInitialSnapIndex] = useState(-1);
+  const [initialGenderIndex, setInitialGenderIndex] = useState(-1);
+  const [initialSportsIndex, setInitialSportsIndex] = useState(-1);
+  const [initialPhotoIndex, setInitialPhotoIndex] = useState(-1);
   const [image, setImage] = useState("");
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetRef2 = useRef<BottomSheet>(null);
+  const bottomSheetRef3 = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["1%", "35%"], []);
+  const snapPointsPhoto = useMemo(() => ["1%", "50%"], []);
   const {
     handleSubmit,
     control,
@@ -57,7 +61,7 @@ export default function ProfileEdit() {
       (snapPoint) => parseInt(snapPoint) >= screenHeight / 100
     );
 
-    setInitialSnapIndex(closestSnapPoint);
+    setInitialSportsIndex(closestSnapPoint);
     bottomSheetRef2.current?.snapToIndex(closestSnapPoint);
   }
 
@@ -68,13 +72,27 @@ export default function ProfileEdit() {
       (snapPoint) => parseInt(snapPoint) >= screenHeight / 100
     );
 
-    setInitialSnapIndex(closestSnapPoint);
+    setInitialGenderIndex(closestSnapPoint);
     bottomSheetRef.current?.snapToIndex(closestSnapPoint);
   }
+
+  function handleOpenPhoto() {
+    const screenHeight = Dimensions.get("window").height;
+    
+    const closestSnapPoint = snapPointsPhoto.findIndex(
+      (snapPoint) => parseInt(snapPoint) >= screenHeight / 100
+    );
+
+    setInitialPhotoIndex(closestSnapPoint);
+    bottomSheetRef3.current?.snapToIndex(closestSnapPoint);
+  }
+
+
 
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
     bottomSheetRef2.current?.close();
+    bottomSheetRef3.current?.close();
     return true;
   };
 
@@ -160,7 +178,7 @@ export default function ProfileEdit() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <TouchableWithoutFeedback onPress={handleClosePress}>
+      {/* <TouchableWithoutFeedback onPress={handleClosePress}> */}
         <ScrollView overScrollMode="never" bounces={false}>
           <View className="px-5 pb-8 pt-[38px] flex-1">
             <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
@@ -171,7 +189,7 @@ export default function ProfileEdit() {
             </Text>
 
             <TouchableOpacity
-              onPress={pickImage}
+              onPress={handleOpenPhoto}
               className="h-[94px] w-[94px] mt-8 relative"
             >
               {image ? (
@@ -278,7 +296,7 @@ export default function ProfileEdit() {
             <BottomSheet
               ref={bottomSheetRef}
               snapPoints={snapPoints}
-              index={-1}
+              index={initialGenderIndex}
               enablePanDownToClose
               backgroundStyle={{
                 borderRadius: 20,
@@ -330,7 +348,7 @@ export default function ProfileEdit() {
           <BottomSheet
             ref={bottomSheetRef2}
             snapPoints={snapPoints}
-            index={-1}
+            index={initialSportsIndex}
             enablePanDownToClose
             backgroundStyle={{
               borderRadius: 20,
@@ -359,8 +377,42 @@ export default function ProfileEdit() {
               </View>
             </BottomSheetView>
           </BottomSheet>
+
+          <BottomSheet
+            ref={bottomSheetRef3}
+            snapPoints={snapPointsPhoto}
+            index={initialPhotoIndex}
+            enablePanDownToClose
+            backgroundStyle={{
+              borderRadius: 20,
+            }}
+          >
+            <BottomSheetView className="flex-1">
+              <View className="mx-5 mb-8">
+                <TouchableOpacity
+                  onPress={() => {
+                    pickImage();
+                    handleClosePress();
+                  }}
+                  className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
+                >
+                  <Text>Escolher um foto da galeria</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSports("Ciclismo");
+                    handleClosePress();
+                  }}
+                  className="h-[51px] justify-center items-center"
+                >
+                  <Text className="text-[#EB4335]">Remover foto</Text>
+                </TouchableOpacity>
+              </View>
+            </BottomSheetView>
+          </BottomSheet>
         </ScrollView>
-      </TouchableWithoutFeedback>
+
+      {/* </TouchableWithoutFeedback> */}
     </SafeAreaView>
   );
 }
