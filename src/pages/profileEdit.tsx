@@ -173,7 +173,9 @@ export default function ProfileEdit() {
 
   function onSubmit(data: FormData) {
     console.log(data);
-    console.log(unMaskedValue);
+    console.log(gender)
+    console.log(sports)
+    console.log(unMaskedValue)
   }
 
   return (
@@ -182,7 +184,7 @@ export default function ProfileEdit() {
         <ScrollView overScrollMode="never" bounces={false}>
           <View className="px-5 pb-8 pt-[38px] flex-1">
             <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-              <Left onPress={() => navigation.navigate("Profile")} />
+              <Left onPress={() => navigation.goBack()} />
             </View>
             <Text className="font-inter-bold text-2xl mt-7">
               Mantenha seu perfil atualizado

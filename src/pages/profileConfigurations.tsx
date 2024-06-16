@@ -33,14 +33,14 @@ export default function MenuConfigurations() {
     <SafeAreaView className="flex-1 bg-white ">
       <View className="px-5 pb-4 pt-[38px] flex-1">
       <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-        <Left onPress={() => navigation.navigate('Profile')} />
+        <Left onPress={() => navigation.goBack()} />
       </View>
 
       <View className="mt-4 px-4">
-        <View className="flex-row items-center gap-x-4 border-b-[0.2px] mb-[bg-bondis-text-gray] py-4">
+        <TouchableOpacity onPress={() => navigation.navigate('ProfileEdit')}  className="flex-row items-center gap-x-4 border-b-[0.2px] mb-[bg-bondis-text-gray] py-4">
             <Pen />
             <Text className="text-base font-inter-regular">Editar perfil</Text>
-        </View>
+        </TouchableOpacity>
         <View className="flex-row items-center gap-x-4 border-b-[0.2px] mb-[bg-bondis-text-gray] py-4">
             <Tool/>
             <Text className="text-base font-inter-regular">Configurações da conta</Text>
