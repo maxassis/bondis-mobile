@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import {
   Text,
   SafeAreaView,
@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   BackHandler,
+  StyleSheet,
 } from "react-native";
 import Left from "../../assets/arrow-left.svg";
 import { useNavigation } from "@react-navigation/native";
@@ -20,6 +21,8 @@ import * as ImagePicker from "expo-image-picker";
 import { useForm, Controller } from "react-hook-form";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Down from "../../assets/down.svg";
+import tokenExists from "../store/auth";
+import RNPickerSelect from "react-native-picker-select";
 
 type File = {
   type: string;
@@ -32,75 +35,39 @@ type FormData = {
   bio: string;
 };
 
+interface UserData {
+  id: string;
+  avatar_url: string | null;
+  avatar_filename: string | null;
+  full_name: string | null;
+  bio: string | null;
+  gender: string | null;
+  sport: string | null;
+  createdAt: Date;
+  usersId: string;
+  name: string;
+}
+
 const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB em bytes
 
 export default function ProfileEdit() {
+  const token = tokenExists((state) => state.token);
   const navigation = useNavigation<any>();
   const [gender, setGender] = useState("");
   const [sports, setSports] = useState("");
+  const [bioValue, setBioValue] = useState("");
+  const [nameValue, setNameValue] = useState("");
   const [unMaskedValue, setUnmaskedValue] = useState("");
-  const [initialGenderIndex, setInitialGenderIndex] = useState(-1);
-  const [initialSportsIndex, setInitialSportsIndex] = useState(-1);
-  const [initialPhotoIndex, setInitialPhotoIndex] = useState(-1);
-  const [image, setImage] = useState("");
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const bottomSheetRef2 = useRef<BottomSheet>(null);
-  const bottomSheetRef3 = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["1%", "35%"], []);
-  const snapPointsPhoto = useMemo(() => ["1%", "50%"], []);
+  const [userData, setUserData] = useState<UserData>({} as UserData);
+  // const [image, setImage] = useState("");
+ 
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<FormData>();
 
-  function handleOpenSports() {
-    const screenHeight = Dimensions.get("window").height;
-
-    const closestSnapPoint = snapPoints.findIndex(
-      (snapPoint) => parseInt(snapPoint) >= screenHeight / 100
-    );
-
-    setInitialSportsIndex(closestSnapPoint);
-    bottomSheetRef2.current?.snapToIndex(closestSnapPoint);
-  }
-
-  function handleOpenGender() {
-    const screenHeight = Dimensions.get("window").height;
-
-    const closestSnapPoint = snapPoints.findIndex(
-      (snapPoint) => parseInt(snapPoint) >= screenHeight / 100
-    );
-
-    setInitialGenderIndex(closestSnapPoint);
-    bottomSheetRef.current?.snapToIndex(closestSnapPoint);
-  }
-
-  function handleOpenPhoto() {
-    const screenHeight = Dimensions.get("window").height;
-    
-    const closestSnapPoint = snapPointsPhoto.findIndex(
-      (snapPoint) => parseInt(snapPoint) >= screenHeight / 100
-    );
-
-    setInitialPhotoIndex(closestSnapPoint);
-    bottomSheetRef3.current?.snapToIndex(closestSnapPoint);
-  }
-
-
-
-  const handleClosePress = () => {
-    bottomSheetRef.current?.close();
-    bottomSheetRef2.current?.close();
-    bottomSheetRef3.current?.close();
-    return true;
-  };
-
-  const backHandler = BackHandler.addEventListener(
-    "hardwareBackPress",
-    handleClosePress
-  );
-
+  
   const pickImage = async () => {
     let { assets, canceled } = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -139,9 +106,7 @@ export default function ProfileEdit() {
             method: "POST",
             headers: {
               "Content-Type": "multipart/form-data",
-              authorization:
-                "Bearer " +
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYm9uZGlzOCIsImVtYWlsIjoiYm9uZGlzOEB0ZXN0ZS5jb20iLCJpZCI6ImNseGNvdjlnMDAwMDBsbzF1cnUxdTFkNHYiLCJpYXQiOjE3MTgzMTY5NjMsImV4cCI6MTcyNjA5Mjk2M30.Ft24bhunWUzJARcGdCOeFR-DPMbOC-tqkz6klkhM_Ak",
+              authorization: "Bearer " + token,
             },
             body: formData,
           }
@@ -150,7 +115,7 @@ export default function ProfileEdit() {
         if (response.ok) {
           const responseData = await response.json();
           console.log("Upload successful", responseData);
-          setImage(assets[0].uri);
+          // setImage(assets[0].uri);
         } else {
           console.error("Upload failed!", response.status);
         }
@@ -159,6 +124,24 @@ export default function ProfileEdit() {
       }
     }
   };
+
+  useEffect(() => {
+    fetch("http://172.22.0.1:3000/users/getUserData", {
+      headers: {
+        "Content-type": "application/json",
+        authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json() as Promise<UserData>)
+      .then((data) => {
+        console.log(data);
+        setUserData(data);
+        setGender(data.gender ?? "");
+        setSports(data.sport ?? "");
+        setNameValue(data.full_name ?? "");
+        setBioValue(data.bio ?? "");
+      });
+  }, []);
 
   const getFileSize = async (uri: string) => {
     try {
@@ -171,250 +154,146 @@ export default function ProfileEdit() {
     }
   };
 
-  function onSubmit(data: FormData) {
-    console.log(data);
-    console.log(gender)
-    console.log(sports)
-    console.log(unMaskedValue)
+  function submitForm() {
+    console.log("heheheheh")
   }
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* <TouchableWithoutFeedback onPress={handleClosePress}> */}
-        <ScrollView overScrollMode="never" bounces={false}>
-          <View className="px-5 pb-8 pt-[38px] flex-1">
-            <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
-              <Left onPress={() => navigation.goBack()} />
-            </View>
-            <Text className="font-inter-bold text-2xl mt-7">
-              Mantenha seu perfil atualizado
-            </Text>
-
-            <TouchableOpacity
-              onPress={handleOpenPhoto}
-              className="h-[94px] w-[94px] mt-8 relative"
-            >
-              {image ? (
-                <Image
-                  source={{ uri: image }}
-                  className="w-[94px] h-[94px] rounded-full"
-                />
-              ) : (
-                <User />
-              )}
-
-              <Image
-                source={require("../../assets/cam.png")}
-                className="absolute bottom-[-15px] right-[-10px]"
-              />
-            </TouchableOpacity>
-
-            <Text className="font-inter-bold text-base mt-[23px]">Nome</Text>
-            <Controller
-              control={control}
-              name="fullName"
-              render={({ field: { value, onChange } }) => (
-                <TextInput
-                  placeholder="Nome completo"
-                  value={value}
-                  autoCapitalize="none"
-                  onChangeText={onChange}
-                  className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
-                />
-              )}
-            />
-
-            <Text className="font-inter-bold text-base mt-[23px]">Bio</Text>
-            <Controller
-              control={control}
-              name="bio"
-              render={({ field: { value, onChange } }) => (
-                <TextInput
-                  placeholder="Escreva um pouco sobre você..."
-                  numberOfLines={3}
-                  value={value}
-                  autoCapitalize="none"
-                  onChangeText={onChange}
-                  className="bg-bondis-text-gray rounded-[4px] h-[144px] mt-2 p-4"
-                  style={{ textAlignVertical: "top" }}
-                />
-              )}
-            />
-
-            <Text className="font-inter-bold text-base mt-[23px]">
-              Data de Nascimento
-            </Text>
-            <MaskedTextInput
-              placeholder="__/__/____"
-              mask="99/99/9999"
-              onChangeText={(text, rawText) => {
-                setUnmaskedValue(rawText);
-              }}
-              className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
-              keyboardType="numeric"
-            />
-
-            <Text className="font-inter-bold text-base mt-[23px]">
-              Como você se identifica?
-            </Text>
-            <TouchableOpacity
-              onPress={handleOpenGender}
-              className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 px-4 justify-center"
-            >
-              {gender ? <Text>{gender}</Text> : (
-                <View className="flex-row justify-between">
-                <Text className="text-bondis-gray-dark">Selecione</Text> 
-                <Down/> 
-                </View>
-                )}
-            </TouchableOpacity>
-
-            <Text className="font-inter-bold text-base mt-[23px]">
-              Esportes
-            </Text>
-            <TouchableOpacity
-              onPress={handleOpenSports}
-              className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 px-4 justify-center"
-            >
-              {sports ? <Text>{sports}</Text> : (
-                <View className="flex-row justify-between">
-                <Text className="text-bondis-gray-dark">Selecione</Text> 
-                <Down/> 
-                </View>
-                )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={handleSubmit(onSubmit)}
-              className="h-[52px] bg-bondis-green mt-8 rounded-full justify-center items-center"
-            >
-              <Text className="font-inter-bold text-base">
-                Salvar alterações
-              </Text>
-            </TouchableOpacity>
+      <ScrollView overScrollMode="never" bounces={false}>
+        <View className="px-5 pb-8 pt-[38px] flex-1">
+          <View className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center">
+            <Left onPress={() => navigation.goBack()} />
           </View>
+          <Text className="font-inter-bold text-2xl mt-7">
+            Mantenha seu perfil atualizado
+          </Text>
 
-          <TouchableWithoutFeedback onPress={handleClosePress}>
-            <BottomSheet
-              ref={bottomSheetRef}
-              snapPoints={snapPoints}
-              index={initialGenderIndex}
-              enablePanDownToClose
-              backgroundStyle={{
-                borderRadius: 20,
-              }}
-            >
-              <BottomSheetView className="flex-1">
-                <View className="mx-5 mb-8">
-                  <TouchableOpacity
-                    onPress={() => {
-                      setGender("Homem");
-                      handleClosePress();
-                    }}
-                    className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
-                  >
-                    <Text>Homem</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setGender("Mulher");
-                      handleClosePress();
-                    }}
-                    className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
-                  >
-                    <Text>Mulher</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setGender("Não binario");
-                      handleClosePress();
-                    }}
-                    className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
-                  >
-                    <Text>Não binario</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setGender("Prefiro não responder");
-                      handleClosePress();
-                    }}
-                    className="h-[51px] justify-center items-center"
-                  >
-                    <Text>Prefiro não responder</Text>
-                  </TouchableOpacity>
-                </View>
-              </BottomSheetView>
-            </BottomSheet>
-          </TouchableWithoutFeedback>
-
-          <BottomSheet
-            ref={bottomSheetRef2}
-            snapPoints={snapPoints}
-            index={initialSportsIndex}
-            enablePanDownToClose
-            backgroundStyle={{
-              borderRadius: 20,
-            }}
+          <TouchableOpacity
+            // onPress={handleOpenPhoto}
+            className="h-[94px] w-[94px] mt-8 relative"
           >
-            <BottomSheetView className="flex-1">
-              <View className="mx-5 mb-8">
-                <TouchableOpacity
-                  onPress={() => {
-                    setSports("Corrida");
-                    handleClosePress();
-                  }}
-                  className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
-                >
-                  <Text>Corrida</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSports("Ciclismo");
-                    handleClosePress();
-                  }}
-                  className="h-[51px] justify-center items-center"
-                >
-                  <Text>Ciclismo</Text>
-                </TouchableOpacity>
-              </View>
-            </BottomSheetView>
-          </BottomSheet>
+            {userData.avatar_url ? (
+              <Image
+                source={{ uri: userData.avatar_url }}
+                className="w-[94px] h-[94px] rounded-full"
+              />
+            ) : (
+              <User />
+            )}
 
-          <BottomSheet
-            ref={bottomSheetRef3}
-            snapPoints={snapPointsPhoto}
-            index={initialPhotoIndex}
-            enablePanDownToClose
-            backgroundStyle={{
-              borderRadius: 20,
+            <Image
+              source={require("../../assets/cam.png")}
+              className="absolute bottom-[-15px] right-[-10px]"
+            />
+          </TouchableOpacity>
+
+          <Text className="font-inter-bold text-base mt-[23px]">Nome</Text>
+          <TextInput
+            placeholder="Nome completo"
+            value={nameValue}
+            autoCapitalize="none"
+            onChangeText={setNameValue}
+            className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
+          />
+
+          <Text className="font-inter-bold text-base mt-[23px]">Bio</Text>
+          <TextInput
+            placeholder="Escreva um pouco sobre você..."
+            numberOfLines={3}
+            value={bioValue}
+            autoCapitalize="none"
+            onChangeText={setBioValue}
+            className="bg-bondis-text-gray rounded-[4px] h-[144px] mt-2 p-4"
+            style={{ textAlignVertical: "top" }}
+          />
+
+          <Text className="font-inter-bold text-base mt-[23px]">
+            Data de Nascimento
+          </Text>
+          <MaskedTextInput
+            placeholder="__/__/____"
+            mask="99/99/9999"
+            onChangeText={(text, rawText) => {
+              setUnmaskedValue(rawText);
             }}
-          >
-            <BottomSheetView className="flex-1">
-              <View className="mx-5 mb-8">
-                <TouchableOpacity
-                  onPress={() => {
-                    pickImage();
-                    handleClosePress();
-                  }}
-                  className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
-                >
-                  <Text>Escolher um foto da galeria</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSports("Ciclismo");
-                    handleClosePress();
-                  }}
-                  className="h-[51px] justify-center items-center"
-                >
-                  <Text className="text-[#EB4335]">Remover foto</Text>
-                </TouchableOpacity>
-              </View>
-            </BottomSheetView>
-          </BottomSheet>
-        </ScrollView>
+            className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
+            keyboardType="numeric"
+          />
 
-      {/* </TouchableWithoutFeedback> */}
+          <Text className="font-inter-bold text-base mt-[23px]">
+            Como você se identifica?
+          </Text>
+          <RNPickerSelect
+            style={pickerStyle}
+            useNativeAndroidPickerStyle={false}
+            onValueChange={(value) => console.log(value)}
+            Icon={() => <Down />}
+            value={userData.gender}
+            placeholder={{ label: "Selecione", value: null }}
+            items={[
+              { label: "Homem", value: "homem" },
+              { label: "Mulher", value: "mulher" },
+              { label: "Não binário", value: "nao_binario" },
+              {
+                label: "Prefiro não responder",
+                value: "prefiro_nao_responder",
+              },
+            ]}
+          />
+
+          <Text className="font-inter-bold text-base mt-[23px]">Esportes</Text>
+          <RNPickerSelect
+            style={pickerStyle}
+            useNativeAndroidPickerStyle={false}
+            onValueChange={(value) => console.log(value)}
+            Icon={() => <Down />}
+            value={userData.sport}
+            placeholder={{ label: "Selecione", value: null }}
+            items={[
+              { label: "Corrida", value: "corrida" },
+              { label: "Ciclismo", value: "ciclismo" },
+            ]}
+          />
+
+          <TouchableOpacity
+            onPress={submitForm}
+            className="h-[52px] bg-bondis-green mt-8 rounded-full justify-center items-center"
+          >
+            <Text className="font-inter-bold text-base">Salvar alterações</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
+
+const pickerStyle = StyleSheet.create({
+  inputIOS: {
+    backgroundColor: "#EEEEEE",
+    fontSize: 14,
+    height: 52,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderRadius: 4,
+    color: "black",
+    paddingRight: 30,
+  },
+  inputAndroid: {
+    backgroundColor: "#EEEEEE",
+    fontSize: 14,
+    height: 52,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    color: "black",
+    marginTop: 8,
+  },
+  placeholder: {
+    color: "gray",
+    fontSize: 14,
+  },
+  iconContainer: {
+    top: 23,
+    right: 12,
+  },
+});
