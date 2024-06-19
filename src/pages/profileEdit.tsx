@@ -15,11 +15,10 @@ import { useNavigation } from "@react-navigation/native";
 import User from "../../assets/user.svg";
 import { MaskedTextInput } from "react-native-mask-text";
 import * as ImagePicker from "expo-image-picker";
-import { useForm, Controller } from "react-hook-form";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Down from "../../assets/down.svg";
 import tokenExists from "../store/auth";
 import RNPickerSelect from "react-native-picker-select";
+import Modal from "react-native-modal";
 
 type File = {
   type: string;
@@ -52,7 +51,8 @@ export default function ProfileEdit() {
   const [unMaskedValue, setUnmaskedValue] = useState("");
   const [userData, setUserData] = useState<UserData>({} as UserData);
   const [reloadImage, setReloadImage] = useState(0);
-  
+  const [isModalVisible, setModalVisible] = useState(false);
+
   const pickImage = async () => {
     let { assets, canceled } = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -138,34 +138,35 @@ export default function ProfileEdit() {
     }
   };
 
- async function submitForm() {
-  const result = await fetch("http://172.22.0.1:3000/users/edituserdata", {
-    method: "PATCH",
-    headers: {
-      "Content-type": "application/json",
-      authorization: "Bearer " + token,
-    },
-    body: JSON.stringify({
-      full_name: nameValue ? nameValue : null,
-      bio: bioValue ? bioValue : null,
-      birthDate: unMaskedValue ? unMaskedValue : null,
-      gender: gender ? gender : null,
-      sport: sports ? sports : null,
-    }),
-  })
+  async function submitForm() {
+    const result = await fetch("http://172.22.0.1:3000/users/edituserdata", {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+        authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({
+        full_name: nameValue ? nameValue : null,
+        bio: bioValue ? bioValue : null,
+        birthDate: unMaskedValue ? unMaskedValue : null,
+        gender: gender ? gender : null,
+        sport: sports ? sports : null,
+      }),
+    });
 
-  const data = await result.json()
-  if (result.ok) {
-    console.log("success", data)
-  } else {
-    console.log("error")
-    throw new Error(data.message)
-  }
+    const data = await result.json();
+    if (result.ok) {
+      console.log("success", data);
+    } else {
+      console.log("error");
+      throw new Error(data.message);
+    }
   }
 
-  function teste() {
-    
-  }
+  const selectAvatar = () => {
+    setModalVisible(false);
+    pickImage();
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -179,7 +180,7 @@ export default function ProfileEdit() {
           </Text>
 
           <TouchableOpacity
-            onPress={teste}
+            onPress={() => setModalVisible(true)}
             className="h-[94px] w-[94px] mt-8 relative"
           >
             {userData.avatar_url ? (
@@ -271,6 +272,24 @@ export default function ProfileEdit() {
           >
             <Text className="font-inter-bold text-base">Salvar alterações</Text>
           </TouchableOpacity>
+
+          <Modal isVisible={isModalVisible}>
+            <View className="w-full h-32 bg-white rounded-lg justify-center items-center px-4">
+              <TouchableOpacity className="w-full pb-4" onPress={selectAvatar}>
+                <Text className="text-center text-base ">
+                  Escolher uma foto na galeria
+                </Text>
+              </TouchableOpacity>
+
+              <View className="border-b-[0.2px] mb-[bg-bondis-text-gray w-full"></View>
+
+              <TouchableOpacity>
+                <Text className="text-center text-base pt-4  text-[#EB4335] ">
+                  Remover foto
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
         </View>
       </ScrollView>
     </SafeAreaView>
