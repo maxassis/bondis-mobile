@@ -26,6 +26,11 @@ type File = {
   name: string;
 };
 
+interface uploadAvatarResponse {
+  avatar_url: string;
+  avatar_filename: string;
+}
+
 interface UserData {
   id: string;
   avatar_url: string | null;
@@ -49,6 +54,7 @@ export default function ProfileEdit() {
   const [bioValue, setBioValue] = useState("");
   const [nameValue, setNameValue] = useState("");
   const [unMaskedValue, setUnmaskedValue] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [userData, setUserData] = useState<UserData>({} as UserData);
   const [reloadImage, setReloadImage] = useState(0);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -98,8 +104,9 @@ export default function ProfileEdit() {
         );
 
         if (response.ok) {
-          const responseData = await response.json();
+          const responseData: uploadAvatarResponse = await response.json();
           console.log("Upload successful", responseData);
+          setImageUrl(responseData.avatar_url);
           setReloadImage(reloadImage + 1);
         } else {
           console.error("Upload failed!", response.status);
@@ -124,6 +131,7 @@ export default function ProfileEdit() {
         setSports(data.sport ?? "");
         setNameValue(data.full_name ?? "");
         setBioValue(data.bio ?? "");
+        setImageUrl(data.avatar_url ?? "");
       });
   }, []);
 
@@ -168,6 +176,31 @@ export default function ProfileEdit() {
     pickImage();
   };
 
+  async function deleteAvatar() {
+    const result = await fetch(`http://172.22.0.1:3000/users/deleteavatar`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+        authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({
+        filename: userData.avatar_url
+      }),
+    })
+
+    const data = await result.json();
+    console.log(data)
+    if (result.ok) {
+      console.log("success deleted", data);
+      setImageUrl("");
+      setModalVisible(false);
+    } else {
+      console.log("error");
+      setModalVisible(false);
+      throw new Error(data.message);
+    }
+  } 
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView overScrollMode="never" bounces={false}>
@@ -183,9 +216,9 @@ export default function ProfileEdit() {
             onPress={() => setModalVisible(true)}
             className="h-[94px] w-[94px] mt-8 relative"
           >
-            {userData.avatar_url ? (
+            {imageUrl ? (
               <Image
-                source={{ uri: `${userData.avatar_url}?reload=${reloadImage}` }}
+                source={{ uri: `${imageUrl}?reload=${reloadImage}` }}
                 className="w-[94px] h-[94px] rounded-full"
               />
             ) : (
@@ -273,7 +306,11 @@ export default function ProfileEdit() {
             <Text className="font-inter-bold text-base">Salvar alterações</Text>
           </TouchableOpacity>
 
-          <Modal isVisible={isModalVisible}>
+          <Modal 
+          isVisible={isModalVisible}
+          onBackdropPress={() => setModalVisible(false)}
+          onBackButtonPress={() => setModalVisible(false)} 
+          >
             <View className="w-full h-32 bg-white rounded-lg justify-center items-center px-4">
               <TouchableOpacity className="w-full pb-4" onPress={selectAvatar}>
                 <Text className="text-center text-base ">
@@ -283,7 +320,7 @@ export default function ProfileEdit() {
 
               <View className="border-b-[0.2px] mb-[bg-bondis-text-gray w-full"></View>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={deleteAvatar}>
                 <Text className="text-center text-base pt-4  text-[#EB4335] ">
                   Remover foto
                 </Text>
