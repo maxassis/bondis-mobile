@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Text,
   SafeAreaView,
@@ -8,9 +8,6 @@ import {
   ScrollView,
   TextInput,
   Alert,
-  TouchableWithoutFeedback,
-  Dimensions,
-  BackHandler,
   StyleSheet,
 } from "react-native";
 import Left from "../../assets/arrow-left.svg";
@@ -30,11 +27,6 @@ type File = {
   name: string;
 };
 
-type FormData = {
-  fullName: string;
-  bio: string;
-};
-
 interface UserData {
   id: string;
   avatar_url: string | null;
@@ -48,7 +40,7 @@ interface UserData {
   name: string;
 }
 
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB em bytes
+const MAX_FILE_SIZE = 3 * 1024 * 1024;
 
 export default function ProfileEdit() {
   const token = tokenExists((state) => state.token);
@@ -59,14 +51,7 @@ export default function ProfileEdit() {
   const [nameValue, setNameValue] = useState("");
   const [unMaskedValue, setUnmaskedValue] = useState("");
   const [userData, setUserData] = useState<UserData>({} as UserData);
-  // const [image, setImage] = useState("");
- 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<FormData>();
-
+  const [reloadImage, setReloadImage] = useState(0);
   
   const pickImage = async () => {
     let { assets, canceled } = await ImagePicker.launchImageLibraryAsync({
@@ -115,7 +100,7 @@ export default function ProfileEdit() {
         if (response.ok) {
           const responseData = await response.json();
           console.log("Upload successful", responseData);
-          // setImage(assets[0].uri);
+          setReloadImage(reloadImage + 1);
         } else {
           console.error("Upload failed!", response.status);
         }
@@ -134,7 +119,6 @@ export default function ProfileEdit() {
     })
       .then((response) => response.json() as Promise<UserData>)
       .then((data) => {
-        console.log(data);
         setUserData(data);
         setGender(data.gender ?? "");
         setSports(data.sport ?? "");
@@ -154,8 +138,33 @@ export default function ProfileEdit() {
     }
   };
 
-  function submitForm() {
-    console.log("heheheheh")
+ async function submitForm() {
+  const result = await fetch("http://172.22.0.1:3000/users/edituserdata", {
+    method: "PATCH",
+    headers: {
+      "Content-type": "application/json",
+      authorization: "Bearer " + token,
+    },
+    body: JSON.stringify({
+      full_name: nameValue ? nameValue : null,
+      bio: bioValue ? bioValue : null,
+      birthDate: unMaskedValue ? unMaskedValue : null,
+      gender: gender ? gender : null,
+      sport: sports ? sports : null,
+    }),
+  })
+
+  const data = await result.json()
+  if (result.ok) {
+    console.log("success", data)
+  } else {
+    console.log("error")
+    throw new Error(data.message)
+  }
+  }
+
+  function teste() {
+    
   }
 
   return (
@@ -170,12 +179,12 @@ export default function ProfileEdit() {
           </Text>
 
           <TouchableOpacity
-            // onPress={handleOpenPhoto}
+            onPress={teste}
             className="h-[94px] w-[94px] mt-8 relative"
           >
             {userData.avatar_url ? (
               <Image
-                source={{ uri: userData.avatar_url }}
+                source={{ uri: `${userData.avatar_url}?reload=${reloadImage}` }}
                 className="w-[94px] h-[94px] rounded-full"
               />
             ) : (
@@ -227,9 +236,9 @@ export default function ProfileEdit() {
           <RNPickerSelect
             style={pickerStyle}
             useNativeAndroidPickerStyle={false}
-            onValueChange={(value) => console.log(value)}
+            onValueChange={(value) => setGender(value)}
             Icon={() => <Down />}
-            value={userData.gender}
+            value={gender}
             placeholder={{ label: "Selecione", value: null }}
             items={[
               { label: "Homem", value: "homem" },
@@ -246,9 +255,9 @@ export default function ProfileEdit() {
           <RNPickerSelect
             style={pickerStyle}
             useNativeAndroidPickerStyle={false}
-            onValueChange={(value) => console.log(value)}
+            onValueChange={(value) => setSports(value)}
             Icon={() => <Down />}
-            value={userData.sport}
+            value={sports}
             placeholder={{ label: "Selecione", value: null }}
             items={[
               { label: "Corrida", value: "corrida" },
