@@ -25,7 +25,7 @@ export interface UserData {
   sport: string | null
   createdAt: Date
   usersId: string
-  name: string
+  username: string
 }
 
 export default function Profile() {
@@ -37,16 +37,17 @@ export default function Profile() {
 
   useEffect(() => {
     async function getUserData() {
-      const result = await fetch("http://192.168.10.14:3000/users/getUserData", {
+    await fetch("http://172.22.0.1:3000/users/getUserData", {
         headers: {
           "Content-type": "application/json",
           authorization:
             "Bearer " + token
         },
-      });
-
-      const data: UserData = await result.json();      
-      setUserData(data);
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setUserData(data);
+        });
     }
 
     getUserData()
@@ -73,7 +74,7 @@ export default function Profile() {
         </View>
 
         <Text className="text-bondis-green text-lg font-inter-bold text-center mt-[29px]">
-          {userData.name}
+          {userData.username}
         </Text>
         <Text className="text-center text-bondis-text-gray font-inter-regular text-sm mt-2">
           {userData.bio}
