@@ -1,4 +1,3 @@
-import { StackRouter } from "@react-navigation/native"
 import LoginRoutes from "./login.routes"
 import AppRoutes from "./app.routes"
 import tokenExists from '../store/auth';

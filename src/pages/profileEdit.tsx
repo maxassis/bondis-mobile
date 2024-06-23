@@ -19,6 +19,7 @@ import Down from "../../assets/down.svg";
 import tokenExists from "../store/auth";
 import RNPickerSelect from "react-native-picker-select";
 import Modal from "react-native-modal";
+import userDataStore from "../store/userData";
 
 type File = {
   type: string;
@@ -54,17 +55,19 @@ export default function ProfileEdit() {
   const [bioValue, setBioValue] = useState("");
   const [nameValue, setNameValue] = useState("");
   const [unMaskedValue, setUnmaskedValue] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [userData, setUserData] = useState<UserData>({} as UserData);
-  const [reloadImage, setReloadImage] = useState(0);
+  // const [imageUrl, setImageUrl] = useState("");
+  // const [userData, setUserData] = useState<UserData>({} as UserData);
+  // const [reloadImage, setReloadImage] = useState(0);
   const [isModalVisible, setModalVisible] = useState(false);
+  const saveUserData = userDataStore((state) => state.setUserData);
+  const getUserData = userDataStore((state) => state.data);
 
   const pickImage = async () => {
     let { assets, canceled } = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
-      quality: 1,
+      quality: 0,
       base64: true,
       allowsMultipleSelection: false,
     });
@@ -106,19 +109,19 @@ export default function ProfileEdit() {
         if (response.ok) {
           const responseData: uploadAvatarResponse = await response.json();
           console.log("Upload successful", responseData);
-          setImageUrl(responseData.avatar_url);
-          setReloadImage(reloadImage + 1);
-        } else {
-          console.error("Upload failed!", response.status);
-        }
+          // setImageUrl(responseData.avatar_url);
+          // setReloadImage(reloadImage + 1);
+          saveUserData({ ...getUserData, avatar_url: responseData.avatar_url });
+        } 
       } catch (error) {
         console.error("Upload error", error);
+        Alert.alert("Erro", "Falha ao enviar imagem, tente novamente");
       }
     }
   };
 
   useEffect(() => {
-    setReloadImage(reloadImage + 1);
+    // setReloadImage(reloadImage + 1);
     fetch("http://172.22.0.1:3000/users/getUserData", {
       headers: {
         "Content-type": "application/json",
@@ -127,12 +130,13 @@ export default function ProfileEdit() {
     })
       .then((response) => response.json() as Promise<UserData>)
       .then((data) => {
-        setUserData(data);
+        // setUserData(data);
+        saveUserData(data);
         setGender(data.gender ?? "");
         setSports(data.sport ?? "");
         setNameValue(data.full_name ?? "");
         setBioValue(data.bio ?? "");
-        setImageUrl(data.avatar_url ?? "");
+        // setImageUrl(data.avatar_url ?? "");
       });
   }, []);
 
@@ -185,7 +189,7 @@ export default function ProfileEdit() {
         authorization: "Bearer " + token,
       },
       body: JSON.stringify({
-        filename: userData.avatar_url
+        filename: getUserData.avatar_url
       }),
     })
 
@@ -193,7 +197,8 @@ export default function ProfileEdit() {
     console.log(data)
     if (result.ok) {
       console.log("success deleted", data);
-      setImageUrl("");
+      // setImageUrl("");
+      saveUserData({ ...getUserData, avatar_url: "" });
       setModalVisible(false);
     } else {
       console.log("error");
@@ -217,9 +222,9 @@ export default function ProfileEdit() {
             onPress={() => setModalVisible(true)}
             className="h-[94px] w-[94px] mt-8 relative"
           >
-            {imageUrl ? (
+            {getUserData.avatar_url ? (
               <Image
-                source={{ uri: `${imageUrl}?reload=${reloadImage}` }}
+                source={{ uri: `${getUserData.avatar_url}?t=${new Date().getTime()}` }}
                 className="w-[94px] h-[94px] rounded-full"
               />
             ) : (

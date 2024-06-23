@@ -14,6 +14,8 @@ import { StatusBar } from "expo-status-bar";
 import Map from "../../assets/map.svg";
 import Plus from "../../assets/plus.svg";
 import tokenExists from '../store/auth';
+import userDataStore from "../store/userData";
+
 
 export interface UserData {
   id: string
@@ -32,8 +34,9 @@ export default function Profile() {
   const navigation = useNavigation<any>();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["30%"], []);
-  const [userData, setUserData] = useState<UserData>({} as UserData);
   const token = tokenExists((state) => state.token)
+  const saveUserData = userDataStore((state) => state.setUserData);
+  const getUserData = userDataStore((state) => state.data);
 
   useEffect(() => {
     async function getUserData() {
@@ -46,7 +49,7 @@ export default function Profile() {
       })
         .then((response) => response.json())
         .then((data) => {
-          setUserData(data);
+          saveUserData(data);
         });
     }
 
@@ -58,9 +61,9 @@ export default function Profile() {
       <View className="h-[325px] bg-bondis-black">
         <View className="flex-row h-[92px] justify-between mx-4 mt-[35px]">
           <Logo />
-          {userData.avatar_url ? (
+          {getUserData.avatar_url ? (
              <Image
-             source={{ uri: userData.avatar_url}}
+             source={{ uri: `${getUserData.avatar_url}?t=${new Date().getTime()}` }}
              className="w-[72px] h-[72px] mt-auto rounded-full"
            />
           ) : (
@@ -74,10 +77,10 @@ export default function Profile() {
         </View>
 
         <Text className="text-bondis-green text-lg font-inter-bold text-center mt-[29px]">
-          {userData.username}
+          {getUserData.username}
         </Text>
         <Text className="text-center text-bondis-text-gray font-inter-regular text-sm mt-2">
-          {userData.bio}
+          {getUserData.bio}
         </Text>
 
         <View className="flex-row justify-between h-[51px] mt-[29px] mx-4">
