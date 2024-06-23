@@ -118,6 +118,7 @@ export default function ProfileEdit() {
   };
 
   useEffect(() => {
+    setReloadImage(reloadImage + 1);
     fetch("http://172.22.0.1:3000/users/getUserData", {
       headers: {
         "Content-type": "application/json",
