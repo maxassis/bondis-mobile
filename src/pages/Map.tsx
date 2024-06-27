@@ -307,12 +307,15 @@ const routeCoordinates = [
   [-22.8176, -42.0845]
 ];
 
+
+
+
 export default function Map() {
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token)
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [desafio, setDesafio] = useState<DesafioType>({} as DesafioType) ;
-
+  
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["20%", "85%", "100%"], []);
@@ -358,7 +361,7 @@ export default function Map() {
     })
     .then((response) => response.json() as Promise<DesafioType>)
     .then((data) => {
-      console.log(data)
+      setDesafio(data);
     })
   }, []);
 
@@ -368,21 +371,28 @@ export default function Map() {
       {location && (
         <MapView
           className="flex-1 w-full"
-          ref={mapRef}
-          // initialRegion={{
-          //   latitude: location.coords.latitude,
-          //   longitude: location.coords.longitude,
-          //   latitudeDelta: 0.0922,
-          //   longitudeDelta: 0.0421,
-          // }}
+          // ref={mapRef}
+          initialRegion={{
+            latitude: desafio?.location[0][0],        // [-22.88463, -42.00654]
+            longitude: desafio?.location[0][1],
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
         >
-        {desafio.location &&  
-        <Polyline coordinates={routeCoordinates.map(coord => ({
+          {desafio && (
+            <Polyline coordinates={desafio.location.map(coord => ({
+              latitude: coord[0],
+              longitude: coord[1]
+            }))} />
+          )}
+
+
+        {/* <Polyline coordinates={routeCoordinates.map(coord => ({
           latitude: coord[0],
           longitude: coord[1]
-        }))} />
-        }
-          {/* <Marker coordinate={location.coords} /> */}
+        }))} /> */}
+        
+          <Marker coordinate={location.coords} />
         </MapView>
       )}
 
