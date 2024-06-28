@@ -76,7 +76,8 @@ const findPointAtDistance = (coordinates: number[][], distance: number) => {
       const ratio = remainingDistance / segmentDistance;
       const newLat = startLat + (endLat - startLat) * ratio;
       const newLon = startLon + (endLon - startLon) * ratio;
-      return [newLat, newLon];
+      // return [newLat, newLon];
+      return { latitude: newLat, longitude: newLon };
     }
     traveled += segmentDistance;
   }
@@ -136,7 +137,7 @@ export default function Map() {
     .then((response) => response.json() as Promise<DesafioType>)
     .then((data) => {
       setDesafio(data);
-      setTeste(findPointAtDistance(data.location, 0.1) )
+      setTeste(findPointAtDistance(data.location, 2.5) )
       console.log(findPointAtDistance(data.location, 2));
       
       
@@ -173,7 +174,7 @@ export default function Map() {
         }))} /> */}
 
          <Marker 
-          coordinate={{ latitude: teste[0], longitude: teste[1] }} 
+          coordinate={teste} 
           >
          <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
            <Image source={{ uri: desafio.participation[1].user.UserData?.avatar_url}} className="h-[42px] w-[42px] rounded-full" />
