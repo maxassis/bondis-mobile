@@ -52,11 +52,43 @@ export interface UserData {
   avatar_url: string;
 }
 
+const haversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const toRad = (x: number) => (x * Math.PI) / 180;
+  const R = 6371; // km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+const findPointAtDistance = (coordinates: number[][], distance: number) => {
+  let traveled = 0;
+  for (let i = 0; i < coordinates.length - 1; i++) {
+    const [startLat, startLon] = coordinates[i];
+    const [endLat, endLon] = coordinates[i + 1];
+    const segmentDistance = haversine(startLat, startLon, endLat, endLon);
+    if (traveled + segmentDistance >= distance) {
+      const remainingDistance = distance - traveled;
+      const ratio = remainingDistance / segmentDistance;
+      const newLat = startLat + (endLat - startLat) * ratio;
+      const newLon = startLon + (endLon - startLon) * ratio;
+      return [newLat, newLon];
+    }
+    traveled += segmentDistance;
+  }
+  return coordinates[coordinates.length - 1];
+};
+
 export default function Map() {
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token)
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [desafio, setDesafio] = useState<DesafioType>({} as DesafioType) ;
+  const [teste, setTeste] = useState<any>([])
   
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -104,6 +136,12 @@ export default function Map() {
     .then((response) => response.json() as Promise<DesafioType>)
     .then((data) => {
       setDesafio(data);
+      console.log(data.location.length)
+      setTeste(findPointAtDistance(data.location, 10) )
+      console.log(findPointAtDistance(data.location, 2));
+      console.log(Array.isArray(findPointAtDistance(data.location, 2)));
+      
+      
     })
   }, []);
 
@@ -135,7 +173,7 @@ export default function Map() {
         }))} /> */}
 
          <Marker 
-          coordinate={{ latitude: -22.88463, longitude: -42.00654 }} 
+          coordinate={{ latitude: teste[0], longitude: teste[1] }} 
           >
          <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
            <Image source={{ uri: desafio.participation[1].user.UserData?.avatar_url}} className="h-[42px] w-[42px] rounded-full" />
