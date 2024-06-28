@@ -136,10 +136,8 @@ export default function Map() {
     .then((response) => response.json() as Promise<DesafioType>)
     .then((data) => {
       setDesafio(data);
-      console.log(data.location.length)
-      setTeste(findPointAtDistance(data.location, 10) )
+      setTeste(findPointAtDistance(data.location, 0.1) )
       console.log(findPointAtDistance(data.location, 2));
-      console.log(Array.isArray(findPointAtDistance(data.location, 2)));
       
       
     })
@@ -163,7 +161,9 @@ export default function Map() {
             <Polyline coordinates={desafio.location.map(coord => ({
               latitude: coord[0],
               longitude: coord[1]
-            }))} />
+            }))}
+            strokeWidth={2}
+            />
           )}
 
 
