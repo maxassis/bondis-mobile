@@ -142,6 +142,7 @@ export default function Map() {
         const userLocation = findPointAtDistance(data.location, dta.progress);
         return {
           userId: dta.user.id,
+          avatar: dta.user.UserData?.avatar_url,
           name: dta.user.name,
           location: userLocation
         };
@@ -149,8 +150,7 @@ export default function Map() {
 
       // console.log(updatedParticipants);
       setUsersParticipants(updatedParticipants);
-      console.log(usersParticipants);
-      
+      console.log();
     })
   }, []);
 
@@ -183,13 +183,28 @@ export default function Map() {
           longitude: coord[1]
         }))} /> */}
 
-         <Marker 
+        {/* <Marker 
           coordinate={teste} 
           >
          <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
            <Image source={{ uri: desafio.participation[0].user.UserData?.avatar_url}} className="h-[42px] w-[42px] rounded-full" />
          </View>  
-        </Marker>  
+        </Marker>   */}
+
+        {usersParticipants.map((user, index: number) => (
+        <Marker 
+          key={index}
+          coordinate={user.location} 
+          >
+         <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
+           <Image source={{ uri: user.avatar}} className="h-[42px] w-[42px] rounded-full" />
+         </View>  
+        </Marker> 
+        ))}  
+
+
+
+
         </MapView>
       )}
 
