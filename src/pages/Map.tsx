@@ -1,10 +1,8 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
-// import { StatusBar } from "expo-status-bar";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import {
   SafeAreaView,
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -91,6 +89,7 @@ export default function Map() {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [desafio, setDesafio] = useState<DesafioType>({} as DesafioType) ;
   const [teste, setTeste] = useState<any>([])
+  const [usersParticipants, setUsersParticipants] = useState<any>([]);
   
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -101,7 +100,6 @@ export default function Map() {
 
     if (granted) {
       const currentPosition = await getCurrentPositionAsync();
-      //  console.log(currentPosition);
 
       setLocation(currentPosition);
     }
@@ -143,14 +141,16 @@ export default function Map() {
       const updatedParticipants = data.participation.map(dta => {
         const userLocation = findPointAtDistance(data.location, dta.progress);
         return {
-          user: dta.user,
+          userId: dta.user.id,
+          name: dta.user.name,
           location: userLocation
         };
       });
 
-      console.log(updatedParticipants);
+      // console.log(updatedParticipants);
+      setUsersParticipants(updatedParticipants);
+      console.log(usersParticipants);
       
-
     })
   }, []);
 
