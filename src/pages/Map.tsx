@@ -51,6 +51,20 @@ export interface UserData {
   avatar_url: string;
 }
 
+export interface UserParticipation {
+  avatar: string
+  location: Location
+  name: string
+  userId: string
+}
+
+export interface Location {
+  latitude: number
+  longitude: number
+}
+
+
+
 const haversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const toRad = (x: number) => (x * Math.PI) / 180;
   const R = 6371; // km
@@ -148,9 +162,8 @@ export default function Map() {
         };
       });
 
-      // console.log(updatedParticipants);
       setUsersParticipants(updatedParticipants);
-      console.log();
+      // console.log(usersParticipants);
     })
   }, []);
 
@@ -191,7 +204,7 @@ export default function Map() {
          </View>  
         </Marker>   */}
 
-        {usersParticipants.map((user, index: number) => (
+        {usersParticipants.map((user: UserParticipation, index: number) => (
         <Marker 
           key={index}
           coordinate={user.location} 
@@ -201,9 +214,6 @@ export default function Map() {
          </View>  
         </Marker> 
         ))}  
-
-
-
 
         </MapView>
       )}
@@ -231,7 +241,7 @@ export default function Map() {
               Desafio
             </Text>
             <Text className="text-2xl font-bold font-inter-bold mt-4 mb-4">
-              Cidade Maravilhosa
+              {desafio.name}
             </Text>
 
             <Bar width={"100%"} className="mx-auto block" />
