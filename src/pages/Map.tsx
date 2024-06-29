@@ -27,7 +27,7 @@ import Segundo from "../../assets/segundo.svg";
 import Primeiro from "../../assets/primeiro.svg";
 import UserTime from "../components/userTime";
 import tokenExists from '../store/auth';
-import { getDistance, computeDestinationPoint } from 'geolib';
+import { getDistance, computeDestinationPoint, latitudeKeys } from 'geolib';
 
 
 export interface DesafioType {
@@ -40,6 +40,7 @@ export interface DesafioType {
 
 export interface Participation {
   user: User;
+  progress: number;
 }
 
 export interface User {
@@ -138,9 +139,18 @@ export default function Map() {
     .then((data) => {
       setDesafio(data);
       setTeste(findPointAtDistance(data.location, 2.5) )
-      console.log(findPointAtDistance(data.location, 2));
       
+      const updatedParticipants = data.participation.map(dta => {
+        const userLocation = findPointAtDistance(data.location, dta.progress);
+        return {
+          user: dta.user,
+          location: userLocation
+        };
+      });
+
+      console.log(updatedParticipants);
       
+
     })
   }, []);
 
@@ -177,7 +187,7 @@ export default function Map() {
           coordinate={teste} 
           >
          <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
-           <Image source={{ uri: desafio.participation[1].user.UserData?.avatar_url}} className="h-[42px] w-[42px] rounded-full" />
+           <Image source={{ uri: desafio.participation[0].user.UserData?.avatar_url}} className="h-[42px] w-[42px] rounded-full" />
          </View>  
         </Marker>  
         </MapView>
