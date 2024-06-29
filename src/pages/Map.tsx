@@ -16,7 +16,6 @@ import {
 } from "expo-location";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
-import Bar from "../../assets/Bar.svg";
 import Left from "../../assets/arrow-left.svg";
 import { Image } from "react-native";
 import Winner from "../../assets/winner.svg";
@@ -25,7 +24,8 @@ import Segundo from "../../assets/segundo.svg";
 import Primeiro from "../../assets/primeiro.svg";
 import UserTime from "../components/userTime";
 import tokenExists from '../store/auth';
-//import { getDistance, computeDestinationPoint, latitudeKeys } from 'geolib';
+import * as Progress from 'react-native-progress';
+import userDataStore from "../store/userData";
 
 
 export interface DesafioType {
@@ -111,13 +111,24 @@ const calculateUserDistance = (coordinates: number[][], progress: number): numbe
   return progress;
 };
 
+const formatPercentage = (progress: number): string => {
+  return progress.toLocaleString('en-US', {
+    minimumIntegerDigits: 2,
+    // minimumFractionDigits: 2,
+     maximumFractionDigits: 1
+  });
+};
+
+
 export default function Map() {
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token)
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [desafio, setDesafio] = useState<DesafioType>({} as DesafioType) ;
   const [usersParticipants, setUsersParticipants] = useState<any>([]);
-  
+  const [userProgress, setUserProgress] = useState<any>([]);
+  const [totalDistance, setTotalDistance] = useState<number>(0);
+  const getUserData = userDataStore((state) => state.data);
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["20%", "85%", "100%"], []);
@@ -168,7 +179,13 @@ export default function Map() {
       const updatedParticipants = data.participation.map(dta => {
         const userLocation = findPointAtDistance(data.location, dta.progress);
         const userDistance = calculateUserDistance(data.location, dta.progress);
-        const progressPercentage = (userDistance / totalDistance) * 100;
+        const progressPercentage = formatPercentage((userDistance / totalDistance) * 100);
+
+        setTotalDistance(totalDistance);
+
+        if(dta.user.id === getUserData?.usersId) {
+          setUserProgress(Number(progressPercentage) / 100)
+        }
 
         return {
           userId: dta.user.id,
@@ -181,11 +198,11 @@ export default function Map() {
       });
 
       setUsersParticipants(updatedParticipants);
+      console.log("prog",userProgress);
+      
 
-      console.log("Total Distance:", totalDistance, "km");
-      console.log("Participants:", updatedParticipants);
-
-
+      // console.log("Total Distance:", totalDistance, "km");
+      // console.log("Participants:", updatedParticipants);
     })
     .catch(error => console.error("Error fetching desafio:", error));
   }, []);
@@ -212,20 +229,6 @@ export default function Map() {
             strokeWidth={2}
             />
           )}
-
-
-        {/* <Polyline coordinates={routeCoordinates.map(coord => ({
-          latitude: coord[0],
-          longitude: coord[1]
-        }))} /> */}
-
-        {/* <Marker 
-          coordinate={teste} 
-          >
-         <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
-           <Image source={{ uri: desafio.participation[0].user.UserData?.avatar_url}} className="h-[42px] w-[42px] rounded-full" />
-         </View>  
-        </Marker>   */}
 
         {usersParticipants.map((user: UserParticipation, index: number) => (
         <Marker 
@@ -267,9 +270,9 @@ export default function Map() {
               {desafio.name}
             </Text>
 
-            <Bar width={"100%"} className="mx-auto block" />
+            <Progress.Bar progress={userProgress} width={null} color="#BDBDBD" />
 
-            <Text className="font-inter-bold text-base mt-2">5 de 150km</Text>
+            <Text className="font-inter-bold text-base mt-2">{+userProgress + "%"} de {Math.floor(totalDistance) + " km"}</Text>
 
             <View className="flex-row justify-between mt-6">
               <View className="h-[88px] w-3/12 border-[0.8px] border-[#D9D9D9] rounded justify-center items-center">
