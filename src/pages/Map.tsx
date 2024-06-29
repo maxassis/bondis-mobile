@@ -25,7 +25,7 @@ import Segundo from "../../assets/segundo.svg";
 import Primeiro from "../../assets/primeiro.svg";
 import UserTime from "../components/userTime";
 import tokenExists from '../store/auth';
-import { getDistance, computeDestinationPoint, latitudeKeys } from 'geolib';
+//import { getDistance, computeDestinationPoint, latitudeKeys } from 'geolib';
 
 
 export interface DesafioType {
@@ -63,8 +63,6 @@ export interface Location {
   longitude: number
 }
 
-
-
 const haversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const toRad = (x: number) => (x * Math.PI) / 180;
   const R = 6371; // km
@@ -97,12 +95,27 @@ const findPointAtDistance = (coordinates: number[][], distance: number) => {
   return coordinates[coordinates.length - 1];
 };
 
+const calculateTotalDistance = (coordinates: number[][]): number => {
+  let totalDistance = 0;
+
+  for (let i = 0; i < coordinates.length - 1; i++) {
+    const [startLat, startLon] = coordinates[i];
+    const [endLat, endLon] = coordinates[i + 1];
+    totalDistance += haversine(startLat, startLon, endLat, endLon);
+  }
+
+  return totalDistance;
+};
+
+const calculateUserDistance = (coordinates: number[][], progress: number): number => {
+  return progress;
+};
+
 export default function Map() {
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token)
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [desafio, setDesafio] = useState<DesafioType>({} as DesafioType) ;
-  const [teste, setTeste] = useState<any>([])
   const [usersParticipants, setUsersParticipants] = useState<any>([]);
   
   const mapRef = useRef<MapView>(null);
@@ -150,21 +163,31 @@ export default function Map() {
     .then((response) => response.json() as Promise<DesafioType>)
     .then((data) => {
       setDesafio(data);
-      setTeste(findPointAtDistance(data.location, 2.5) )
       
+      const totalDistance = calculateTotalDistance(data.location);
       const updatedParticipants = data.participation.map(dta => {
         const userLocation = findPointAtDistance(data.location, dta.progress);
+        const userDistance = calculateUserDistance(data.location, dta.progress);
+        const progressPercentage = (userDistance / totalDistance) * 100;
+
         return {
           userId: dta.user.id,
-          avatar: dta.user.UserData?.avatar_url,
           name: dta.user.name,
-          location: userLocation
+          avatar: dta.user.UserData?.avatar_url,
+          location: userLocation,
+          distance: userDistance,
+          percentage: progressPercentage,
         };
       });
 
       setUsersParticipants(updatedParticipants);
-      // console.log(usersParticipants);
+
+      console.log("Total Distance:", totalDistance, "km");
+      console.log("Participants:", updatedParticipants);
+
+
     })
+    .catch(error => console.error("Error fetching desafio:", error));
   }, []);
 
 
