@@ -121,7 +121,6 @@ const formatPercentage = (progress: number): string => {
   });
 };
 
-
 export default function Map() {
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token)
@@ -135,6 +134,39 @@ export default function Map() {
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["20%", "85%", "100%"], []);
+
+  const getUserPath = () => {
+    if (!desafio || userDistance === 0) return [];
+
+    const path = [];
+    let traveled = 0;
+
+    for (let i = 0; i < desafio.location.length - 1; i++) {
+      const [startLat, startLon] = desafio.location[i];
+      const [endLat, endLon] = desafio.location[i + 1];
+      const segmentDistance = haversine(startLat, startLon, endLat, endLon);
+
+      if (traveled + segmentDistance >= userDistance) {
+        const remainingDistance = userDistance - traveled;
+        const ratio = remainingDistance / segmentDistance;
+        const newLat = startLat + (endLat - startLat) * ratio;
+        const newLon = startLon + (endLon - startLon) * ratio;
+
+        path.push({ latitude: startLat, longitude: startLon });
+        path.push({ latitude: newLat, longitude: newLon });
+        break;
+      } else {
+        path.push({ latitude: startLat, longitude: startLon });
+        traveled += segmentDistance;
+      }
+    }
+
+    return path;
+  };
+
+  const userPath = getUserPath();
+  console.log(userPath);
+  
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
@@ -205,7 +237,8 @@ export default function Map() {
       // console.log("prog", userDistance);
       // console.log("Total Distance:", totalDistance, "km");
       // console.log("Participants:", updatedParticipants);
-      console.log(usersParticipants);
+      // console.log(usersParticipants);
+      // console.log(getUserData.usersId);
       
     })
     .catch(error => console.error("Error fetching desafio:", error));
@@ -228,12 +261,19 @@ export default function Map() {
           }}
         >
           {desafio && (
+            <>
             <Polyline coordinates={desafio.location.map(coord => ({
               latitude: coord[0],
               longitude: coord[1]
             }))}
-            strokeWidth={2}
+            strokeWidth={4}
             />
+            <Polyline
+                coordinates={userPath}
+                strokeWidth={2}
+                strokeColor="#12FF55"
+              />
+            </>        
           )}
 
         {usersParticipants.map((user: UserParticipation, index: number) => (
