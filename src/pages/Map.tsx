@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { Callout, Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   SafeAreaView,
   Text,
@@ -212,6 +212,7 @@ export default function Map() {
     <View className="flex-1 bg-white justify-center items-center relative">
       {location && (
         <MapView
+          provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
           className="flex-1 w-full"
           // ref={mapRef}
@@ -235,10 +236,11 @@ export default function Map() {
         <Marker 
           key={index}
           coordinate={user.location} 
-          >
-         <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
-           <Image source={{ uri: user.avatar}} className="h-[42px] w-[42px] rounded-full" />
-         </View>  
+          title="teste"
+          > 
+          <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
+            <Image source={{ uri: user.avatar}} className="h-[42px] w-[42px] rounded-full" />
+          </View>         
         </Marker> 
         ))}  
 
