@@ -26,7 +26,7 @@ import UserTime from "../components/userTime";
 import tokenExists from '../store/auth';
 import * as Progress from 'react-native-progress';
 import userDataStore from "../store/userData";
-
+import { mapStyle } from "../mapStyle";
 
 export interface DesafioType {
   id:            number;
@@ -212,6 +212,7 @@ export default function Map() {
     <View className="flex-1 bg-white justify-center items-center relative">
       {location && (
         <MapView
+          customMapStyle={mapStyle}
           className="flex-1 w-full"
           // ref={mapRef}
           initialRegion={{
