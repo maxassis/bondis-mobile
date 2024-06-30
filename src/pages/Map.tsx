@@ -126,7 +126,8 @@ export default function Map() {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [desafio, setDesafio] = useState<DesafioType>({} as DesafioType) ;
   const [usersParticipants, setUsersParticipants] = useState<any>([]);
-  const [userProgress, setUserProgress] = useState<any>([]);
+  const [userProgress, setUserProgress] = useState<any>(0);
+  const [userDistance, setUserDistance] = useState<number>(0);
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const getUserData = userDataStore((state) => state.data);
   const mapRef = useRef<MapView>(null);
@@ -185,6 +186,7 @@ export default function Map() {
 
         if(dta.user.id === getUserData?.usersId) {
           setUserProgress(Number(progressPercentage) / 100)
+          setUserDistance(dta.progress);
         }
 
         return {
@@ -198,9 +200,7 @@ export default function Map() {
       });
 
       setUsersParticipants(updatedParticipants);
-      console.log("prog",userProgress);
-      
-
+      // console.log("prog", userDistance);
       // console.log("Total Distance:", totalDistance, "km");
       // console.log("Participants:", updatedParticipants);
     })
@@ -270,9 +270,9 @@ export default function Map() {
               {desafio.name}
             </Text>
 
-            <Progress.Bar progress={userProgress} width={null} color="#BDBDBD" />
+            <Progress.Bar progress={userProgress ? userProgress : 0} width={null} height={8} color="#12FF55" unfilledColor="#565656" borderColor="transparent" borderWidth={0} />
 
-            <Text className="font-inter-bold text-base mt-2">{+userProgress + "%"} de {Math.floor(totalDistance) + " km"}</Text>
+            <Text className="font-inter-bold text-base mt-2">{userDistance} de {Math.floor(totalDistance) + " km"}</Text>
 
             <View className="flex-row justify-between mt-6">
               <View className="h-[88px] w-3/12 border-[0.8px] border-[#D9D9D9] rounded justify-center items-center">
