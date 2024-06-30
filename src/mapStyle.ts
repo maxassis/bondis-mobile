@@ -18,15 +18,15 @@ export const mapStyle = [
             }
         ]
     },
-    {
-        "featureType": "landscape.natural",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#D6F7E1"
-            }
-        ]
-    },
+    // {
+    //     "featureType": "landscape.natural",
+    //     "elementType": "geometry",
+    //     "stylers": [
+    //         {
+    //             "color": "#D6F7E1"
+    //         }
+    //     ]
+    // },
     {
         "featureType": "landscape.man_made",
         "elementType": "geometry",

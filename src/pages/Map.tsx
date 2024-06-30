@@ -56,6 +56,8 @@ export interface UserParticipation {
   location: Location
   name: string
   userId: string
+  distance: number,
+  percentage: string
 }
 
 export interface Location {
@@ -203,6 +205,8 @@ export default function Map() {
       // console.log("prog", userDistance);
       // console.log("Total Distance:", totalDistance, "km");
       // console.log("Participants:", updatedParticipants);
+      console.log(usersParticipants);
+      
     })
     .catch(error => console.error("Error fetching desafio:", error));
   }, []);
@@ -236,11 +240,16 @@ export default function Map() {
         <Marker 
           key={index}
           coordinate={user.location} 
-          title="teste"
           > 
           <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
             <Image source={{ uri: user.avatar}} className="h-[42px] w-[42px] rounded-full" />
-          </View>         
+          </View>
+          <Callout tooltip > 
+            <View className="p-1 w-[150px] bg-bondis-black mb-2 justify-center items-center rounded-md">
+              <Text className="text-bondis-green font-inter-bold">{user.name}</Text>
+              <Text className="text-white">{user.distance} Km</Text>
+            </View>
+          </Callout>        
         </Marker> 
         ))}  
 
