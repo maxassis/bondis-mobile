@@ -164,10 +164,6 @@ export default function Map() {
     return path;
   };
 
-  const userPath = getUserPath();
-  console.log(userPath);
-  
-
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
 
@@ -233,13 +229,7 @@ export default function Map() {
         };
       });
 
-      setUsersParticipants(updatedParticipants);
-      // console.log("prog", userDistance);
-      // console.log("Total Distance:", totalDistance, "km");
-      // console.log("Participants:", updatedParticipants);
-      // console.log(usersParticipants);
-      // console.log(getUserData.usersId);
-      
+      setUsersParticipants(updatedParticipants); 
     })
     .catch(error => console.error("Error fetching desafio:", error));
   }, []);
@@ -269,11 +259,11 @@ export default function Map() {
             strokeWidth={4}
             />
             <Polyline
-                coordinates={userPath}
+                coordinates={getUserPath()}
                 strokeWidth={2}
                 strokeColor="#12FF55"
               />
-            </>        
+            </> 
           )}
 
         {usersParticipants.map((user: UserParticipation, index: number) => (
@@ -291,7 +281,18 @@ export default function Map() {
             </View>
           </Callout>        
         </Marker> 
-        ))}  
+        ))}
+
+        {desafio && (
+          <Marker
+            coordinate={{
+              latitude: desafio.location[desafio.location.length -1][0],
+              longitude: desafio.location[desafio.location.length -1][1],
+            }}
+          >
+            <Image source={require("../../assets/final-pin.png")} />
+          </Marker>
+        )}
 
         </MapView>
       )}
