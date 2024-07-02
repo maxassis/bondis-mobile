@@ -27,6 +27,29 @@ import tokenExists from '../store/auth';
 import * as Progress from 'react-native-progress';
 import userDataStore from "../store/userData";
 import { mapStyle } from "../mapStyle";
+import { cva } from "class-variance-authority";
+
+const userPin = cva(
+  "h-[50px] w-[50px] rounded-full bg-black justify-center items-center",
+  {
+    variants: {
+      intent: {
+        user: "bg-bondis-green h-[58px] w-[58px] ",
+      },
+    },
+  }
+);
+
+const photoUser = cva(
+  "h-[42px] w-[42px] rounded-full",
+  {
+    variants: {
+      intent: {
+        user: "h-[50px] w-[50px]",
+      },
+    },
+  }
+);
 
 export interface DesafioType {
   id:            number;
@@ -228,7 +251,7 @@ export default function Map() {
           percentage: progressPercentage,
         };
       });
-
+ 
       setUsersParticipants(updatedParticipants); 
     })
     .catch(error => console.error("Error fetching desafio:", error));
@@ -244,7 +267,7 @@ export default function Map() {
           className="flex-1 w-full"
           // ref={mapRef}
           initialRegion={{
-            latitude: desafio?.location[0][0],        // [-22.88463, -42.00654]
+            latitude: desafio?.location[0][0],        
             longitude: desafio?.location[0][1],
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
@@ -270,9 +293,10 @@ export default function Map() {
         <Marker 
           key={index}
           coordinate={user.location} 
+          style={user.userId === getUserData?.usersId ? {zIndex: 100000, elevation: 100000}: {zIndex: index, elevation: index}}
           > 
-          <View className="h-[50px] w-[50px] rounded-full bg-black justify-center items-center"> 
-            <Image source={{ uri: user.avatar}} className="h-[42px] w-[42px] rounded-full" />
+          <View className={userPin({intent: user.userId === getUserData?.usersId ? "user" : null})}  > 
+            <Image source={{ uri: user.avatar}} className={photoUser({intent: user.userId === getUserData?.usersId ? "user" : null})}  />
           </View>
           <Callout tooltip > 
             <View className="p-1 w-[150px] bg-bondis-black mb-2 justify-center items-center rounded-md">
