@@ -352,7 +352,7 @@ export default function Map() {
 
             <Progress.Bar progress={userProgress ? userProgress : 0} width={null} height={8} color="#12FF55" unfilledColor="#565656" borderColor="transparent" borderWidth={0} />
 
-            <Text className="font-inter-bold text-base mt-2">{userDistance} de {Number(totalDistance).toFixed(3) + " km"}</Text>
+            <Text className="font-inter-bold text-base mt-2">{userDistance > totalDistance ? totalDistance.toFixed(3) : userDistance} de {totalDistance.toFixed(3) + " km"}</Text>
 
             <View className="flex-row justify-between mt-6">
               <View className="h-[88px] w-3/12 border-[0.8px] border-[#D9D9D9] rounded justify-center items-center">
@@ -377,7 +377,7 @@ export default function Map() {
               <Image source={require("../../assets/top.png")} />
               <Text className="flex-1 flex-wrap ml-[10px] text-center">
                 <Text className="text-bondis-green font-inter-bold">
-                  Nildis
+                  {getUserData.username}
                 </Text>
                 <Text
                   numberOfLines={3}
