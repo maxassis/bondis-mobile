@@ -292,7 +292,10 @@ export default function Map() {
         {usersParticipants.map((user: UserParticipation, index: number) => (
         <Marker 
           key={index}
-          coordinate={user.location} 
+          coordinate={user.distance > totalDistance ? {
+            latitude: desafio.location[desafio.location.length -1][0],
+            longitude: desafio.location[desafio.location.length -1][1],
+          } : user.location} 
           style={user.userId === getUserData?.usersId ? {zIndex: 100000, elevation: 100000}: {zIndex: index, elevation: index}}
           > 
           <View className={userPin({intent: user.userId === getUserData?.usersId ? "user" : null})}  > 
@@ -349,7 +352,7 @@ export default function Map() {
 
             <Progress.Bar progress={userProgress ? userProgress : 0} width={null} height={8} color="#12FF55" unfilledColor="#565656" borderColor="transparent" borderWidth={0} />
 
-            <Text className="font-inter-bold text-base mt-2">{userDistance} de {Math.floor(totalDistance) + " km"}</Text>
+            <Text className="font-inter-bold text-base mt-2">{userDistance} de {Number(totalDistance).toFixed(3) + " km"}</Text>
 
             <View className="flex-row justify-between mt-6">
               <View className="h-[88px] w-3/12 border-[0.8px] border-[#D9D9D9] rounded justify-center items-center">
