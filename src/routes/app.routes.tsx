@@ -4,6 +4,7 @@ import Map from '../pages/Map';
 import MenuConfigurations from '../pages/profileConfigurations';
 import ProfileEdit from '../pages/profileEdit';
 import DesafioSelect from '../pages/desafioSelect';
+import Teste from '../pages/teste';
 
 const App = createNativeStackNavigator()
 
@@ -13,13 +14,14 @@ export default function AppRoutes() {
             screenOptions={{
                 headerShown: false
             }}
-            initialRouteName="Profile"
+            initialRouteName="Teste"
         >
             <App.Screen name="Profile" component={Profile} />
             <App.Screen name="Map" component={Map} />
             <App.Screen name="Configurations" component={MenuConfigurations} />
             <App.Screen name="ProfileEdit" component={ProfileEdit} />
             <App.Screen name="DesafioSelect" component={DesafioSelect} />
+            <App.Screen name="Teste" component={Teste} />
 
             
          
