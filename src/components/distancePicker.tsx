@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import WheelPicker from 'react-native-wheely';
 
-
-const KilometerMeterPicker: React.FC = () => {
+const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: () => void }> = ({ visible, onClose }) => {
   const [selectedKilometer, setSelectedKilometer] = useState<number>(0);
   const [selectedHundreds, setSelectedHundreds] = useState<number>(0);
   const [selectedTens, setSelectedTens] = useState<number>(0);
@@ -17,106 +16,66 @@ const KilometerMeterPicker: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Selecione a distância:</Text>
-      <View className='flex-row w-[335px] mx-auto justify-between px-[55px]'>
-        <Text className='font-inter-bold'>Quilometros</Text>
-        <Text className='font-inter-bold'>Metros</Text>
+    <Modal
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <View className="flex-1 justify-center items-center bg-bondis-overlay">
+        <View className='w-5/6 bg-white p-5 rounded-[10px] items-center'>
+          <Text className='text-lg text-center'>Selecione a distância:</Text>
+          <View className='flex-row justify-around items-center w-full'>
+            <View className='flex-row items-center'>
+              <WheelPicker
+                selectedIndex={selectedKilometer}
+                options={kilometers}
+                onChange={(index) => setSelectedKilometer(index)}
+                containerStyle={{ width: 60 }}
+              />
+              <Text className='font-inter-bold ml-[5px]'>Km</Text>
+            </View>            
+            <View className='flex-row items-center gap-[5px]'>
+              <View>
+                <WheelPicker
+                  selectedIndex={selectedHundreds}
+                  options={digitOptions}
+                  onChange={(index) => setSelectedHundreds(index)}
+                  containerStyle={{ width: 40 }}
+                />
+              </View>
+              <View>
+                <WheelPicker
+                  selectedIndex={selectedTens}
+                  options={digitOptions}
+                  onChange={(index) => setSelectedTens(index)}
+                  containerStyle={{ width: 40 }}
+                />
+              </View>
+              <View>
+                <WheelPicker
+                  selectedIndex={selectedUnits}
+                  options={digitOptions}
+                  onChange={(index) => setSelectedUnits(index)}
+                  containerStyle={{ width: 40 }}
+                />
+              </View>
+              <Text className='font-inter-bold'>Mt</Text>
+            </View>
+          </View>
+          <View className='mt-5 items-center'>
+            <Text className='text-lg items-center font-inter-bold'>
+              Total: {selectedKilometer} km {getTotalMeters()} m
+            </Text>
+          </View>
+          <TouchableOpacity onPress={onClose} className='mt-5 py-[10px] px-5 rounded-[5px] bg-[#007BFF]'>
+            <Text className='text-white font-inter-bold'>Fechar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.pickerContainer}>
-        <View style={styles.pickerWrapper}>
-          {/* <Text style={styles.pickerLabel}>Quilômetros</Text> */}
-          <WheelPicker
-            selectedIndex={selectedKilometer}
-            options={kilometers}
-            onChange={(index) => setSelectedKilometer(index)}
-            containerStyle={{ width: 60 }}
-          />
-        </View>
-
-        <View className='flex-row w-[130px] justify-between items-center '>
-
-        <View style={styles.pickerWrapper}>
-          {/* <Text style={styles.pickerLabel}>Centenas</Text> */}
-          <WheelPicker
-            selectedIndex={selectedHundreds}
-            options={digitOptions}
-            onChange={(index) => setSelectedHundreds(index)}
-            // style={styles.picker}
-            containerStyle={{ width: 40, }}
-          />
-        </View>
-        <View style={styles.pickerWrapper}>
-          {/* <Text style={styles.pickerLabel}>Dezenas</Text> */}
-          <WheelPicker
-            selectedIndex={selectedTens}
-            options={digitOptions}
-            onChange={(index) => setSelectedTens(index)}
-            // itemStyle={{ backgroundColor: 'red' }}
-            containerStyle={{ width: 40 }}
-          />
-        </View>
-        <View style={styles.pickerWrapper}>
-          {/* <Text style={styles.pickerLabel}>Unidades</Text> */}
-          <WheelPicker
-            selectedIndex={selectedUnits}
-            options={digitOptions}
-            onChange={(index) => setSelectedUnits(index)}
-            // style={styles.picker}
-            containerStyle={{ width: 40 }}
-          />
-        </View>
-
-        </View>
-
-      </View>
-      <View style={styles.resultContainer}>
-        <Text style={styles.resultText}>
-          Total: {selectedKilometer} km {getTotalMeters()} m
-        </Text>
-      </View>
-    </View>
+    </Modal>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  label: {
-    fontSize: 18,
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-  pickerContainer: {
-    flexDirection: 'row',
-    width: 335,
-    marginHorizontal: 'auto',
-    // justifyContent: 'space-between',
-    // backgroundColor: 'black',
-  },
-  pickerWrapper: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  picker: {
-    height: 50,
-    width: 10,
-  },
-  pickerLabel: {
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  resultContainer: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  resultText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});
 
-export default KilometerMeterPicker;
+
+export default KilometerMeterPickerModal;
