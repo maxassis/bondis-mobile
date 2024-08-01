@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import WheelPicker from 'react-native-wheely';
 
 const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: () => void }> = ({ visible, onClose }) => {
