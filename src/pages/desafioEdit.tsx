@@ -28,11 +28,21 @@ const ambienceType = cva(
   }
 );
 
+interface Distance {
+  kilometers: number,
+  meters: number
+}
+
 export default function DesafioEdit() {
   const [modalVisible, setModalVisible] = useState(false);
   const [ambience, setAmbience] = useState("Indoor");
-
+  const [distance, setDistance] = useState<{kilometers: number, meters: number}>({kilometers: 0, meters: 0});
   const navigation = useNavigation<any>();
+
+  function closeModalDistance({kilometers, meters} : Distance) {
+    setDistance({kilometers, meters});
+    setModalVisible(false);    
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
@@ -94,7 +104,7 @@ export default function DesafioEdit() {
         </TouchableOpacity>
 
         <Text className="font-inter-bold text-base mt-7">
-          Duração da atividade
+          Duração da atividade 
         </Text>
         <TouchableOpacity className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]">
           <Down />
@@ -106,12 +116,13 @@ export default function DesafioEdit() {
 
         <KilometerMeterPicker
           visible={modalVisible}
-          onClose={() => setModalVisible(false)}
+          onClose={({kilometers, meters} : Distance ) => closeModalDistance({kilometers, meters})}
         />
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
-          className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]"
+          className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 flex-row justify-between items-center pl-4 pr-[22px]"
         >
+          <Text>{distance.kilometers}km {distance.meters}m</Text>
           <Down />
         </TouchableOpacity>
 

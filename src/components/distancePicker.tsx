@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import WheelPicker from 'react-native-wheely';
 
-const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: () => void }> = ({ visible, onClose }) => {
+
+interface Distance {
+  kilometers: number,
+  meters: number
+}
+
+
+const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: ({ kilometers, meters }: Distance) => void }> = ({ visible, onClose }) => {
   const [selectedKilometer, setSelectedKilometer] = useState<number>(0);
   const [selectedHundreds, setSelectedHundreds] = useState<number>(0);
   const [selectedTens, setSelectedTens] = useState<number>(0);
@@ -19,7 +26,7 @@ const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: () => voi
     <Modal
       transparent={true}
       visible={visible}
-      onRequestClose={onClose}
+      // onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-bondis-overlay">
         <View className='w-5/6 bg-white p-5 rounded-[10px] items-center'>
@@ -67,8 +74,8 @@ const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: () => voi
               Total: {selectedKilometer} km {getTotalMeters()} m
             </Text>
           </View>
-          <TouchableOpacity onPress={onClose} className='mt-5 py-[10px] px-5 rounded-[5px] bg-bondis-green'>
-            <Text className='text-white font-inter-bold text-black'>Fechar</Text>
+          <TouchableOpacity onPress={() => onClose({ kilometers: selectedKilometer, meters: getTotalMeters() })} className='mt-5 py-[10px] px-5 rounded-[5px] bg-bondis-green'>
+            <Text className='font-inter-bold text-black'>Fechar</Text>
           </TouchableOpacity>
         </View>
       </View>
