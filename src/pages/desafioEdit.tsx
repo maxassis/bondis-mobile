@@ -29,24 +29,34 @@ const ambienceType = cva(
 );
 
 interface Distance {
-  kilometers: number,
-  meters: number
+  kilometers: number;
+  meters: number;
 }
 
 export default function DesafioEdit() {
   const [modalVisible, setModalVisible] = useState(false);
   const [ambience, setAmbience] = useState("Indoor");
-  const [distance, setDistance] = useState<{kilometers: number, meters: number}>({kilometers: 0, meters: 0});
+  const [distance, setDistance] = useState<{
+    kilometers: number;
+    meters: number;
+  }>({ kilometers: 0, meters: 0 });
+  const [activityName, setActivityName] = useState("");
+  const [calories, setCalories] = useState("");
+  const [local, setLocal] = useState("");
   const navigation = useNavigation<any>();
 
-  function closeModalDistance({kilometers, meters} : Distance) {
-    setDistance({kilometers, meters});
-    setModalVisible(false);    
+  function closeModalDistance({ kilometers, meters }: Distance) {
+    setDistance({ kilometers, meters });
+    setModalVisible(false);
   }
 
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
-      <ScrollView className=" flex-1" showsVerticalScrollIndicator={false} overScrollMode="never">
+      <ScrollView
+        className=" flex-1"
+        showsVerticalScrollIndicator={false}
+        overScrollMode="never"
+      >
         <View className="mb-[10px] pt-[38px]">
           <TouchableOpacity
             onPress={() => navigation.navigate("Intro")}
@@ -61,10 +71,14 @@ export default function DesafioEdit() {
         </Text>
 
         <Text className="font-inter-bold text-base mt-7">
-          Nome da atividade
+          Nome da atividade {activityName}
         </Text>
 
-        <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4" />
+        <TextInput
+          className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4"
+          value={activityName}
+          onChangeText={setActivityName}
+        />
         <Text className="font-inter-bold mt-7 text-base">Ambiente</Text>
         <View className="flex-row mt-4 gap-x-4 ml-[-8px]">
           <TouchableOpacity onPress={() => setAmbience("Indoor")}>
@@ -104,7 +118,7 @@ export default function DesafioEdit() {
         </TouchableOpacity>
 
         <Text className="font-inter-bold text-base mt-7">
-          Duração da atividade 
+          Duração da atividade
         </Text>
         <TouchableOpacity className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]">
           <Down />
@@ -116,32 +130,40 @@ export default function DesafioEdit() {
 
         <KilometerMeterPicker
           visible={modalVisible}
-          onClose={({kilometers, meters} : Distance ) => closeModalDistance({kilometers, meters})}
+          onClose={({ kilometers, meters }: Distance) =>
+            closeModalDistance({ kilometers, meters })
+          }
         />
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
           className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 flex-row justify-between items-center pl-4 pr-[22px]"
         >
-          <Text>{distance.kilometers}km {distance.meters}m</Text>
+          <Text>
+            {distance.kilometers}km {distance.meters}m
+          </Text>
           <Down />
         </TouchableOpacity>
 
         <Text className="font-inter-bold text-base mt-7">
           Calorias queimadas
         </Text>
-        <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4" />
+        <TextInput
+          value={calories}
+          onChangeText={setCalories}
+          keyboardType="numeric"
+          className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4"
+        />
 
-        <Text className="font-inter-bold text-base mt-7">
-          Local
-        </Text>
-        <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4" />      
+        <Text className="font-inter-bold text-base mt-7">Local</Text>
+        <TextInput
+          value={local}
+          onChangeText={setLocal}
+          className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4"
+        />
 
-        <TouchableOpacity
-          className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center"
-        >
+        <TouchableOpacity className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center">
           <Text className="font-inter-bold text-base">Cadastrar atividade</Text>
-        </TouchableOpacity>      
-
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
