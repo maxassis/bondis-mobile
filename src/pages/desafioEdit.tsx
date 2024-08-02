@@ -35,9 +35,9 @@ export default function DesafioEdit() {
   const navigation = useNavigation<any>();
 
   return (
-    <SafeAreaView className="flex-1 bg-white pt-[38px] px-5">
+    <SafeAreaView className="flex-1 bg-white px-5">
       <ScrollView className=" flex-1" showsVerticalScrollIndicator={false} overScrollMode="never">
-        <View className="mb-[10px]">
+        <View className="mb-[10px] pt-[38px]">
           <TouchableOpacity
             onPress={() => navigation.navigate("Intro")}
             className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center"
@@ -118,12 +118,12 @@ export default function DesafioEdit() {
         <Text className="font-inter-bold text-base mt-7">
           Calorias queimadas
         </Text>
-        <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]" />
+        <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4" />
 
         <Text className="font-inter-bold text-base mt-7">
           Local
         </Text>
-        <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]" />      
+        <TextInput className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4" />      
 
         <TouchableOpacity
           className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center"
