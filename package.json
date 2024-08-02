@@ -37,7 +37,6 @@
     "react-native-reanimated": "~3.10.1",
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
-    "react-native-wheel-picker-android": "^2.0.6",
     "react-native-wheely": "^0.6.0",
     "zustand": "^4.5.2"
   },

@@ -67,8 +67,8 @@ const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: () => voi
               Total: {selectedKilometer} km {getTotalMeters()} m
             </Text>
           </View>
-          <TouchableOpacity onPress={onClose} className='mt-5 py-[10px] px-5 rounded-[5px] bg-[#007BFF]'>
-            <Text className='text-white font-inter-bold'>Fechar</Text>
+          <TouchableOpacity onPress={onClose} className='mt-5 py-[10px] px-5 rounded-[5px] bg-bondis-green'>
+            <Text className='text-white font-inter-bold text-black'>Fechar</Text>
           </TouchableOpacity>
         </View>
       </View>
