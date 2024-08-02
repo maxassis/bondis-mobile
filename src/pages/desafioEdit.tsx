@@ -15,14 +15,15 @@ import Indoor from "../../assets/Indoor.svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { cva } from "class-variance-authority";
 import Down from "../../assets/down.svg";
+import tokenExists from "../store/auth";
 
 const ambienceType = cva(
   "h-[37px] rounded-full justify-center items-center flex-row gap-x-[8px] border-[1px] border-[#D9D9D9] pr-4 pl-2",
   {
     variants: {
       intent: {
-        outdoor: "border-0",
-        indoor: "border-0",
+        livre: "border-0",
+        esteira: "border-0",
       },
     },
   }
@@ -35,7 +36,7 @@ interface Distance {
 
 export default function DesafioEdit() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [ambience, setAmbience] = useState("Indoor");
+  const [ambience, setAmbience] = useState("esteira");
   const [distance, setDistance] = useState<{
     kilometers: number;
     meters: number;
@@ -44,10 +45,29 @@ export default function DesafioEdit() {
   const [calories, setCalories] = useState("");
   const [local, setLocal] = useState("");
   const navigation = useNavigation<any>();
+  const token = tokenExists((state) => state.token);
 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
     setModalVisible(false);
+  }
+
+  function sendTaskData() {
+  fetch('http://172.22.0.1:3000/tasks/update-task/40', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+       "name": activityName,
+       "distanceKm": +`${distance.kilometers}.${distance.meters}`,
+       "environment": ambience
+     })
+  })
+  .then(response => response.json())
+  .then(json => console.log(json))
+  .catch(error => console.error(error));
   }
 
   return (
@@ -71,7 +91,7 @@ export default function DesafioEdit() {
         </Text>
 
         <Text className="font-inter-bold text-base mt-7">
-          Nome da atividade {activityName}
+          Nome da atividade
         </Text>
 
         <TextInput
@@ -81,14 +101,14 @@ export default function DesafioEdit() {
         />
         <Text className="font-inter-bold mt-7 text-base">Ambiente</Text>
         <View className="flex-row mt-4 gap-x-4 ml-[-8px]">
-          <TouchableOpacity onPress={() => setAmbience("Indoor")}>
+          <TouchableOpacity onPress={() => setAmbience("livre")}>
             <LinearGradient
               colors={[
-                ambience === "Indoor" ? "rgba(178, 255, 115, 0.322)" : "#fff",
-                ambience === "Indoor" ? "#12FF55" : "#fff",
+                ambience === "livre" ? "rgba(178, 255, 115, 0.322)" : "#fff",
+                ambience === "livre" ? "#12FF55" : "#fff",
               ]}
               className={ambienceType({
-                intent: ambience === "Indoor" ? "indoor" : null,
+                intent: ambience === "livre" ? "livre" : null,
               })}
             >
               <Outdoor />
@@ -96,14 +116,14 @@ export default function DesafioEdit() {
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => setAmbience("Outdoor")}>
+          <TouchableOpacity onPress={() => setAmbience("esteira")}>
             <LinearGradient
               colors={[
-                ambience === "Outdoor" ? "rgba(178, 255, 115, 0.322)" : "#fff",
-                ambience === "Outdoor" ? "#12FF55" : "#fff",
+                ambience === "esteira" ? "rgba(178, 255, 115, 0.322)" : "#fff",
+                ambience === "esteira" ? "#12FF55" : "#fff",
               ]}
               className={ambienceType({
-                intent: ambience === "Outdoor" ? "outdoor" : null,
+                intent: ambience === "esteira" ? "esteira" : null,
               })}
             >
               <Indoor />
@@ -161,7 +181,7 @@ export default function DesafioEdit() {
           className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4"
         />
 
-        <TouchableOpacity className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center">
+        <TouchableOpacity onPress={() => sendTaskData()} className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center">
           <Text className="font-inter-bold text-base">Cadastrar atividade</Text>
         </TouchableOpacity>
       </ScrollView>
