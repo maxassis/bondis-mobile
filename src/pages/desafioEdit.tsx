@@ -34,9 +34,9 @@ interface Distance {
   meters: number;
 }
 
-export default function DesafioEdit() {
+export default function DesafioEdit({ route }: any) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [ambience, setAmbience] = useState("esteira");
+  const [ambience, setAmbience] = useState("livre");
   const [distance, setDistance] = useState<{
     kilometers: number;
     meters: number;
@@ -46,13 +46,14 @@ export default function DesafioEdit() {
   const [local, setLocal] = useState("");
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
+  const { desafioId }: { desafioId: number } = route.params;
 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
     setModalVisible(false);
   }
 
-  function sendTaskData() {
+  function updateTaskData() {
   fetch('http://172.22.0.1:3000/tasks/update-task/40', {
     method: 'PATCH',
     headers: {
@@ -70,6 +71,28 @@ export default function DesafioEdit() {
   .catch(error => console.error(error));
   }
 
+  function createTask() {
+    console.log("teste");
+    
+    fetch('http://172.22.0.1:3000/tasks/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+         "name": activityName,
+         "distance": +`${distance.kilometers}.${distance.meters}`,
+         "environment": ambience,
+         "calories": +calories,
+         "participationId": desafioId
+       })
+    })
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
       <ScrollView
@@ -79,7 +102,7 @@ export default function DesafioEdit() {
       >
         <View className="mb-[10px] pt-[38px]">
           <TouchableOpacity
-            onPress={() => navigation.navigate("Intro")}
+            onPress={() => navigation.navigate("DesafioSelect")}
             className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center"
           >
             <Left />
@@ -181,7 +204,7 @@ export default function DesafioEdit() {
           className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4"
         />
 
-        <TouchableOpacity onPress={() => sendTaskData()} className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center">
+        <TouchableOpacity onPress={() => createTask()} className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center">
           <Text className="font-inter-bold text-base">Cadastrar atividade</Text>
         </TouchableOpacity>
       </ScrollView>
