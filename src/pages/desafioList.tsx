@@ -1,82 +1,69 @@
-import { SafeAreaView, View, Text } from "react-native";
+import { useEffect, useState } from "react";
+import tokenExists from "../store/auth";
+import { SafeAreaView, View, Text, ScrollView } from "react-native";
 import Left from "../../assets/Icon-left.svg";
-import Livre from "../../assets/livre.svg";
-import Calendar from "../../assets/calendar.svg";
-import Pin from "../../assets/map-pin.svg";
-import Gear from "../../assets/settings-black.svg";
-import Link from "../../assets/link.svg";
+import TaskItem from "../components/taskItem";
 
-export default function DesafioList() {
+export type TasksData = Data[];
+export interface Data {
+  id: number;
+  name: string;
+  environment: string;
+  date: null | Date;
+  duration: null | string;
+  calories: number;
+  local: null | string;
+  distanceKm: string;
+  participationId: number;
+  usersId: string;
+}
+
+export default function DesafioList({ route }: any) {
+  const { desafioId, desafioName }: { desafioId: number; desafioName: string } =
+    route.params;
+  const token = tokenExists((state) => state.token);
+  const [data, setData] = useState<TasksData>();
+
+  useEffect(() => {
+    fetch(`http://172.22.0.1:3000/tasks/get-tasks/${desafioId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json() as Promise<TasksData>)
+      .then((data) => {
+        // console.log(data)
+        setData(data);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
   return (
     <SafeAreaView className="flex-1">
-      <View className="bg-white px-5 flex-1">
-        <View className="flex-row mt-[49.5]">
-          <Left className="" />
-          <Text className="text-base font-inter-bold mx-auto ">
-            Atividades recentes
-          </Text>
-        </View>
-
-        <View className="h-[60px] mt-4 pt-2 px-5 mb-7">
-          <Text className="text-sm text-bondis-gray-secondary">Desafio</Text>
-          <Text className="text-base font-inter-bold mt-2">
-            Cidade Maravilhosa
-          </Text>
-        </View>
-
-        <View className="h-[165px] p-5">
-          <View className="flex-row w-full h-[42px]">
-            <View className="h-[42px] flex-row">
-              <Livre />
-              <View className="ml-4 ">
-                <Text className="text-base font-inter-bold">
-                  Atividade matinal
-                </Text>
-                <View className="flex-row">
-                  <View className="flex-row gap-x-1 items-center justify-center">
-                    <Calendar />
-                    <Text className="text-bondis-gray-dark text-xs">
-                      Há 2 dias
-                    </Text>
-                  </View>
-                  <View className="flex-row gap-x-1 items-center justify-center ml-4">
-                    <Pin />
-                    <Text className="text-bondis-gray-dark text-xs ml-4">
-                      Rio de Janeiro
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            <View className="ml-auto w-[40px] h-[32px] items-end">
-              <Gear />
-            </View>
+      <ScrollView overScrollMode="never" className="bg-[#F1F1F1] flex-1">
+        <View className="bg-white mb-7">
+          <View className="flex-row mt-[49.5] px-5 bg-white">
+            <Left className="" />
+            <Text className="text-base font-inter-bold mx-auto ">
+              Atividades recentes
+            </Text>
           </View>
 
-          <View className="flex-row items-center gap-x-1 mt-3">
-            <Link />
-            <Text className="text-xs text-bondis-gray-dark">Sincronizado via Strava</Text>
-          </View> 
-
-          <View className="flex-row mt-3">
-            <View className="w-[98px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">
-                <Text className="text-[18px] font-inter-bold">5,50</Text>
-                <Text className="text-bondis-gray-dark text-[10px]">KM</Text>
-            </View>
-            <View className="w-[98px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">
-                <Text className="text-[18px] font-inter-bold">38:45</Text>
-                <Text className="text-bondis-gray-dark text-[10px]">DURAÇÃO</Text>
-            </View>
-            <View className="w-[98px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">
-                <Text className="text-[18px] font-inter-bold">300</Text>
-                <Text className="text-bondis-gray-dark text-[10px]">CAL</Text>
-            </View>
-          </View> 
-
-
+          <View className="h-[60px] mt-4 pt-2 px-5 mb-7 bg-white">
+            <Text className="text-sm text-bondis-gray-secondary">Desafio</Text>
+            <Text className="text-base font-inter-bold mt-2">
+              {desafioName}
+            </Text>
+          </View>
         </View>
-      </View>
+
+        {data?.map((task) => (
+          <TaskItem task={task} key={task.id} />
+        ))}
+
+      </ScrollView>
     </SafeAreaView>
   );
 }

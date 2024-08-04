@@ -46,7 +46,7 @@ export default function DesafioEdit({ route }: any) {
   const [local, setLocal] = useState("");
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
-  const { desafioId }: { desafioId: number } = route.params;
+  const { desafioId, desafioName }: { desafioId: number, desafioName: string } = route.params;
 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
@@ -71,9 +71,7 @@ export default function DesafioEdit({ route }: any) {
   .catch(error => console.error(error));
   }
 
-  function createTask() {
-    console.log("teste");
-    
+  function createTask() { 
     fetch('http://172.22.0.1:3000/tasks/create', {
       method: 'POST',
       headers: {
@@ -89,7 +87,7 @@ export default function DesafioEdit({ route }: any) {
        })
     })
     .then(response => response.json())
-    .then(json => console.log(json))
+    .then(json => {navigation.navigate("DesafioList", {desafioId, desafioName})})
     .catch(error => console.error(error));
   }
 
