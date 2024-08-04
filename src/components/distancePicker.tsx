@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import WheelPicker from 'react-native-wheely';
-
 
 interface Distance {
   kilometers: number,
   meters: number
 }
 
+export interface KilometerMeterPickerModalRef {
+  clearDistance: () => void;
+}
 
-const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: ({ kilometers, meters }: Distance) => void }> = ({ visible, onClose }) => {
+export interface KilometerMeterPickerModalProps {
+  visible: boolean;
+  onClose: ({ kilometers, meters} : Distance) => void;
+}
+
+const KilometerMeterPickerModal = forwardRef<KilometerMeterPickerModalRef, KilometerMeterPickerModalProps>(
+  ({ onClose, visible  }, ref) => {
   const [selectedKilometer, setSelectedKilometer] = useState<number>(0);
   const [selectedHundreds, setSelectedHundreds] = useState<number>(0);
   const [selectedTens, setSelectedTens] = useState<number>(0);
@@ -18,9 +26,21 @@ const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: ({ kilome
   const kilometers = [...Array(1000).keys()].map(String);
   const digitOptions = [...Array(10).keys()].map(String);
 
+  useImperativeHandle(ref, () => ({
+    clearDistance
+  }));
+
   const getTotalMeters = () => {
     return selectedHundreds * 100 + selectedTens * 10 + selectedUnits;
   };
+
+  function clearDistance() {
+    // console.log("clearDistance");
+    setSelectedKilometer(0);
+    setSelectedHundreds(0);
+    setSelectedTens(0);
+    setSelectedUnits(0);
+  }
 
   return (
     <Modal
@@ -29,9 +49,9 @@ const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: ({ kilome
       // onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-bondis-overlay">
-        <View className='w-5/6 bg-white p-5 rounded-[10px] items-center'>
+        <View className='w-[350px] bg-white p-5 rounded-[10px] items-center'>
           <Text className='text-lg text-center'>Selecione a distância:</Text>
-          <View className='flex-row justify-around items-center w-full'>
+          <View className='flex-row justify-around items-center w-[95%]'>
             <View className='flex-row items-center'>
               <WheelPicker
                 selectedIndex={selectedKilometer}
@@ -75,14 +95,13 @@ const KilometerMeterPickerModal: React.FC<{ visible: boolean, onClose: ({ kilome
             </Text>
           </View>
           <TouchableOpacity onPress={() => onClose({ kilometers: selectedKilometer, meters: getTotalMeters() })} className='mt-5 py-[10px] px-5 rounded-[5px] bg-bondis-green'>
-            <Text className='font-inter-bold text-black'>Fechar</Text>
+            <Text className='font-inter-bold text-black'>Selecionar</Text>
           </TouchableOpacity>
         </View>
       </View>
     </Modal>
   );
-};
-
-
+}
+)
 
 export default KilometerMeterPickerModal;

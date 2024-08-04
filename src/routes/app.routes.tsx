@@ -6,6 +6,7 @@ import ProfileEdit from "../pages/profileEdit";
 import DesafioEdit from "../pages/desafioEdit";
 import DesafioSelect from "../pages/desafioSelect";
 import DesafioList from "../pages/desafioList";
+import Teste from "../pages/teste";
 
 const App = createNativeStackNavigator();
 
@@ -24,6 +25,8 @@ export default function AppRoutes() {
       <App.Screen name="DesafioSelect" component={DesafioSelect} />
       <App.Screen name="DesafioEdit" component={DesafioEdit} />
       <App.Screen name="DesafioList" component={DesafioList} />
+      <App.Screen name="Teste" component={Teste} />
+      
     </App.Navigator>
   );
 }

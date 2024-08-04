@@ -10,6 +10,7 @@ module.exports = {
         'bondis-gray-secondary': '#828282',
         'bondis-gray-dark': '#565656',
         'bondis-overlay': 'rgba(0, 0, 0, 0.5)',
+        'bondis-alert-red': '#EB4335'
       },
       fontFamily: {
         'inter-regular': 'Inter_400Regular',

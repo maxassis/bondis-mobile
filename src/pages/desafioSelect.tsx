@@ -66,7 +66,7 @@ export default function DesafioSelect() {
 
         {desafios &&
           desafios.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => navigation.navigate("DesafioEdit", {desafioId: item.desafioId, desafioName: item.desafio.name})} className="h-[94px] flex-row items-center px-3 py-[15px] border-b-[1px] border-b-[#D9D9D9]">
+            <TouchableOpacity key={index} onPress={() => navigation.navigate("DesafioEdit", {desafioId: item.desafioId, desafioName: item.desafio.name, pageType: "create"})} className="h-[94px] flex-row items-center px-3 py-[15px] border-b-[1px] border-b-[#D9D9D9]">
               <Image source={require("../../assets/Bg.png")} />
               <View className="ml-5" key={index}>
                 <Text className="font-inter-bold">{item.desafio.name}</Text>
