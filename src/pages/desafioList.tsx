@@ -97,7 +97,7 @@ export default function DesafioList({ route }: any) {
             <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Via Apple Saúde</Text>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate("DesafioEdit", { pageType: "create" })} className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
+            <TouchableOpacity onPress={() => navigation.navigate("DesafioEdit", { pageType: "create", desafioId, desafioName })} className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Cadastrar manualmente</Text>
             </TouchableOpacity>
           </View>
