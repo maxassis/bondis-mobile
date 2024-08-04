@@ -29,6 +29,14 @@ const ambienceType = cva(
   }
 );
 
+const buttonDisabled = cva("h-[52px] flex-row bg-bondis-green mt-8 mb-[32px] rounded-full justify-center items-center", {
+  variants: {
+    intent: {
+      disabled: "opacity-50",
+    },
+  },
+});
+
 interface Distance {
   kilometers: number;
   meters: number;
@@ -202,7 +210,12 @@ export default function DesafioEdit({ route }: any) {
           className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4"
         />
 
-        <TouchableOpacity onPress={() => createTask()} className="h-[52px] bg-bondis-green mt-[69px] mb-8 rounded-full justify-center items-center">
+        <TouchableOpacity onPress={() => createTask()} 
+        className={buttonDisabled({
+          intent: activityName == "" || (distance.kilometers == 0 && distance.meters == 0) ? "disabled" : null ,
+        })}
+        disabled={activityName == "" || (distance.kilometers == 0 && distance.meters == 0)}        
+        >
           <Text className="font-inter-bold text-base">Cadastrar atividade</Text>
         </TouchableOpacity>
       </ScrollView>
