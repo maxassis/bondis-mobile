@@ -55,7 +55,9 @@ export default function TaskList({ route }: any) {
       <ScrollView overScrollMode="never" className="bg-[#F1F1F1] flex-1 ">
         <View className="bg-white mb-7">
           <View className="flex-row mt-[49.5] px-5 bg-white">
-            <Left className="" />
+            <TouchableOpacity className="w-[30px] h-[30px]" onPress={() => navigation.navigate("DesafioSelect")} >
+              <Left />
+            </TouchableOpacity>
             <Text className="text-base font-inter-bold mx-auto ">
               Atividades recentes
             </Text>

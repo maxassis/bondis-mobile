@@ -79,6 +79,7 @@ export default function TaskEdit({ route }: any) {
     setDistance({ kilometers: +taskData.distanceKm.split(".")[0], meters: +taskData.distanceKm.split(".")[1] ? +taskData.distanceKm.split(".")[1] : 0 })
     setCalories(taskData.calories.toString())
     setLocal(taskData.local!)
+    setAmbience(taskData.environment)
     ChangeDistancePicker()
   }, []);
 
@@ -125,7 +126,7 @@ export default function TaskEdit({ route }: any) {
                     <Left />  
                 </TouchableOpacity>  
                 <Text className="text-base font-inter-bold mx-auto ">
-                Editar atividade {activityName}
+                Editar atividade
                 </Text>
         </View>
 

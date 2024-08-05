@@ -71,35 +71,6 @@ export default function TaskCreate({ route }: any) {
     }
   };
 
-  // function changePageType() {
-  //   if (pageType === "edit") {
-  //     updateTaskData();
-  //   } else if (pageType === "create") {
-  //     createTask();
-  //   }
-  // }
-
-  // function updateTaskData() {
-  // fetch(`http://172.22.0.1:3000/tasks/update-task/${taskData.id}`, {
-  //   method: 'PATCH',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': `Bearer ${token}`
-  //   },
-  //   body: JSON.stringify({
-  //      "name": activityName,
-  //      "distanceKm": +`${distance.kilometers}.${distance.meters}`,
-  //      "environment": ambience
-  //    })
-  // })
-  // .then(response => response.json())
-  // .then(json => {
-  //   console.log(json)
-  //   navigation.navigate("DesafioList", {desafioId, desafioName})
-  // })
-  // .catch(error => console.error(error));
-  // }
-
   function createTask() { 
     fetch('http://172.22.0.1:3000/tasks/create', {
       method: 'POST',
@@ -117,8 +88,8 @@ export default function TaskCreate({ route }: any) {
     })
     .then(response => response.json())
     .then(json => {
-      clearInputs()
       navigation.navigate("TaskList", {desafioId, desafioName})
+      clearInputs()
     })
     .catch(error => console.error(error));
   }
