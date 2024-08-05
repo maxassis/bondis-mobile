@@ -98,7 +98,7 @@ export default function TaskEdit({ route }: any) {
   })
   .then(response => response.json())
   .then(json => {
-    // console.log(json)
+    console.log(json)
     navigation.navigate("TaskList", {desafioId, desafioName})
   })
   .catch(error => console.error(error));
@@ -125,7 +125,7 @@ export default function TaskEdit({ route }: any) {
                     <Left />  
                 </TouchableOpacity>  
                 <Text className="text-base font-inter-bold mx-auto ">
-                Editar atividade
+                Editar atividade {activityName}
                 </Text>
         </View>
 

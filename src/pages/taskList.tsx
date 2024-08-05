@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import tokenExists from "../store/auth";
 import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from "react-native";
 import Left from "../../assets/Icon-left.svg";
 import TaskItem from "../components/taskItem";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Plus from "../../assets/plus.svg";
 
 export type TasksData = Data[];
@@ -29,7 +29,7 @@ export default function TaskList({ route }: any) {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["30%"], []);
 
-  useEffect(() => {
+  const fetchTasks = useCallback(() => {
     fetch(`http://172.22.0.1:3000/tasks/get-tasks/${desafioId}`, {
       method: "GET",
       headers: {
@@ -39,11 +39,16 @@ export default function TaskList({ route }: any) {
     })
       .then((response) => response.json() as Promise<TasksData>)
       .then((data) => {
-        // console.log(data)
         setData(data);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [desafioId, token]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTasks();
+    }, [fetchTasks])
+  );
 
   return (
     <SafeAreaView className="flex-1">
