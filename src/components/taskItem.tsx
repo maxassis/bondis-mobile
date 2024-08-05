@@ -5,7 +5,6 @@ import Pin from "../../assets/map-pin.svg";
 import Gear from "../../assets/settings-black.svg";
 import Link from "../../assets/link.svg";
 import { useNavigation } from "@react-navigation/native";
-import { TasksData } from "../pages/taskList";
 
 export interface TaskItemProps {
   id: number
@@ -49,7 +48,7 @@ export default function TaskItem({ task }: { task: TaskItemProps }) {
               </View>
             </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate("TaskEdit", { desafioId: task.participationId })} className="ml-auto w-[40px] h-[32px] items-end">
+            <TouchableOpacity onPress={() => navigation.navigate("TaskEdit", { desafioId: task.participationId, taskData: task })} className="ml-auto w-[40px] h-[32px] items-end">
               <Gear />
             </TouchableOpacity>
           </View>

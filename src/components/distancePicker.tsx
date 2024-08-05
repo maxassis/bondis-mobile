@@ -9,6 +9,7 @@ interface Distance {
 
 export interface KilometerMeterPickerModalRef {
   clearDistance: () => void;
+  changeDistance: (km: number, m: number) => void;
 }
 
 export interface KilometerMeterPickerModalProps {
@@ -27,7 +28,7 @@ const KilometerMeterPickerModal = forwardRef<KilometerMeterPickerModalRef, Kilom
   const digitOptions = [...Array(10).keys()].map(String);
 
   useImperativeHandle(ref, () => ({
-    clearDistance
+    clearDistance, changeDistance
   }));
 
   const getTotalMeters = () => {
@@ -40,6 +41,13 @@ const KilometerMeterPickerModal = forwardRef<KilometerMeterPickerModalRef, Kilom
     setSelectedHundreds(0);
     setSelectedTens(0);
     setSelectedUnits(0);
+  }
+
+  function changeDistance(km: number, mt: number) {
+     setSelectedKilometer(km);
+     setSelectedHundreds(Math.floor(mt / 100));
+     setSelectedTens(Math.floor((mt % 100) / 10));
+     setSelectedUnits(mt % 10);
   }
 
   return (

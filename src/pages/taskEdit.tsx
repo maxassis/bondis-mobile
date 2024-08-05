@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "react-native";
 import KilometerMeterPicker, { KilometerMeterPickerModalRef } from "../components/distancePicker";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Outdoor from "../../assets/Outdoor.svg";
 import Indoor from "../../assets/Indoor.svg";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,6 +16,8 @@ import { cva } from "class-variance-authority";
 import Down from "../../assets/down.svg";
 import tokenExists from "../store/auth";
 import Left from "../../assets/Icon-left.svg";
+import { Data } from "./taskList";
+
 
 const ambienceType = cva(
   "h-[37px] rounded-full justify-center items-center flex-row gap-x-[8px] border-[1px] border-[#D9D9D9] pr-4 pl-2",
@@ -42,7 +44,7 @@ interface Distance {
   meters: number;
 }
 
-interface RouteParams { desafioId: number, desafioName: string } 
+interface RouteParams { desafioId: number, desafioName: string, taskData: Data  } 
 
 export default function TaskEdit({ route }: any) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -56,7 +58,7 @@ export default function TaskEdit({ route }: any) {
   const [local, setLocal] = useState("");
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
-  const { desafioId, desafioName }: RouteParams = route.params;
+  const { desafioId, desafioName, taskData }: RouteParams = route.params;
   const childRef = useRef<KilometerMeterPickerModalRef>(null);
 
  
@@ -65,15 +67,21 @@ export default function TaskEdit({ route }: any) {
     setModalVisible(false);
   }
 
-  const handleClearDistance = () => {
+  const ChangeDistancePicker = () => {
     if (childRef.current) {
-      childRef.current.clearDistance();
+      childRef.current.changeDistance(+taskData.distanceKm.split(".")[0], +taskData.distanceKm.split(".")[1] ? +taskData.distanceKm.split(".")[1] : 0);
     }
   };
 
+  ChangeDistancePicker()
+
   useEffect(() => {
-    console.log("hehehehheeheheh")
-    setActivityName("hehehehehehehehhehehehehhehehehehheheheh")
+    // console.log(taskData)
+    setActivityName(taskData.name)
+    setDistance({ kilometers: +taskData.distanceKm.split(".")[0], meters: +taskData.distanceKm.split(".")[1] ? +taskData.distanceKm.split(".")[1] : 0 })
+    setCalories(taskData.calories.toString())
+    setLocal(taskData.local!)
+    ChangeDistancePicker()
   }, []);
 
 
@@ -92,7 +100,7 @@ export default function TaskEdit({ route }: any) {
   })
   .then(response => response.json())
   .then(json => {
-    console.log(json)
+    // console.log(json)
     navigation.navigate("TaskList", {desafioId, desafioName})
   })
   .catch(error => console.error(error));
