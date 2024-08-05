@@ -8,14 +8,14 @@ import {
   TextInput,
 } from "react-native";
 import KilometerMeterPicker, { KilometerMeterPickerModalRef } from "../components/distancePicker";
-import Left from "../../assets/arrow-left.svg";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Outdoor from "../../assets/Outdoor.svg";
 import Indoor from "../../assets/Indoor.svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { cva } from "class-variance-authority";
 import Down from "../../assets/down.svg";
 import tokenExists from "../store/auth";
+import Left from "../../assets/Icon-left.svg";
 
 const ambienceType = cva(
   "h-[37px] rounded-full justify-center items-center flex-row gap-x-[8px] border-[1px] border-[#D9D9D9] pr-4 pl-2",
@@ -42,7 +42,9 @@ interface Distance {
   meters: number;
 }
 
-export default function DesafioEdit({ route }: any) {
+interface RouteParams { desafioId: number, desafioName: string } 
+
+export default function TaskEdit({ route }: any) {
   const [modalVisible, setModalVisible] = useState(false);
   const [ambience, setAmbience] = useState("livre");
   const [distance, setDistance] = useState<{
@@ -54,9 +56,10 @@ export default function DesafioEdit({ route }: any) {
   const [local, setLocal] = useState("");
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
-  const { desafioId, desafioName, pageType }: { desafioId: number, desafioName: string, pageType: string } = route.params;
+  const { desafioId, desafioName }: RouteParams = route.params;
   const childRef = useRef<KilometerMeterPickerModalRef>(null);
 
+ 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
     setModalVisible(false);
@@ -68,8 +71,14 @@ export default function DesafioEdit({ route }: any) {
     }
   };
 
+  useEffect(() => {
+    console.log("hehehehheeheheh")
+    setActivityName("hehehehehehehehhehehehehhehehehehheheheh")
+  }, []);
+
+
   function updateTaskData() {
-  fetch('http://172.22.0.1:3000/tasks/update-task/40', {
+  fetch(`http://172.22.0.1:3000/tasks/update-task/${taskData.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -82,41 +91,21 @@ export default function DesafioEdit({ route }: any) {
      })
   })
   .then(response => response.json())
-  .then(json => console.log(json))
+  .then(json => {
+    console.log(json)
+    navigation.navigate("TaskList", {desafioId, desafioName})
+  })
   .catch(error => console.error(error));
   }
 
-  function createTask() { 
-    fetch('http://172.22.0.1:3000/tasks/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-         "name": activityName,
-         "distance": +`${distance.kilometers}.${distance.meters}`,
-         "environment": ambience,
-         "calories": +calories,
-         "participationId": desafioId
-       })
-    })
-    .then(response => response.json())
-    .then(json => {
-      clearInputs()
-      navigation.navigate("DesafioList", {desafioId, desafioName})
-    })
-    .catch(error => console.error(error));
-  }
-
-  function clearInputs() {
-    setActivityName("")
-    setDistance({ kilometers: 0, meters: 0 });
-    setAmbience("livre");
-    setCalories("");
-    setLocal("");
-    handleClearDistance();
-  }
+//   function clearInputs() {
+//     setActivityName("")
+//     setDistance({ kilometers: 0, meters: 0 });
+//     setAmbience("livre");
+//     setCalories("");
+//     setLocal("");
+//     handleClearDistance();
+//   }
 
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
@@ -125,21 +114,17 @@ export default function DesafioEdit({ route }: any) {
         showsVerticalScrollIndicator={false}
         overScrollMode="never"
       >
-        <View className="mb-[10px] pt-[38px]">
-          <TouchableOpacity
-            onPress={() => navigation.navigate("DesafioSelect")}
-            className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center"
-          >
-            <Left />
-          </TouchableOpacity>
+        <View className="flex-row items-end h-[86px] pb-[14px]">
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Left />  
+                </TouchableOpacity>  
+                <Text className="text-base font-inter-bold mx-auto ">
+                Editar atividade
+                </Text>
         </View>
 
-        <Text className="text-2xl font-inter-bold mt-7">
-          Como foi o sua atividade? 
-        </Text>
-
         <Text className="font-inter-bold text-base mt-7">
-          Nome da atividade
+          Nome
         </Text>
 
         <TextInput
@@ -242,7 +227,7 @@ export default function DesafioEdit({ route }: any) {
           className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px] pl-4"
         />
 
-        <TouchableOpacity onPress={() => createTask()} 
+        <TouchableOpacity onPress={() => updateTaskData()} 
         className={buttonDisabled({
           intent: activityName == "" || (distance.kilometers == 0 && distance.meters == 0) ? "disabled" : null ,
         })}

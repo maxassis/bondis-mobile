@@ -1,9 +1,11 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import Livre from "../../assets/livre.svg";
 import Calendar from "../../assets/calendar.svg";
 import Pin from "../../assets/map-pin.svg";
 import Gear from "../../assets/settings-black.svg";
 import Link from "../../assets/link.svg";
+import { useNavigation } from "@react-navigation/native";
+import { TasksData } from "../pages/taskList";
 
 export interface TaskItemProps {
   id: number
@@ -19,6 +21,8 @@ export interface TaskItemProps {
 }
 
 export default function TaskItem({ task }: { task: TaskItemProps }) {
+    const navigation = useNavigation<any>();
+
     return(
         <View className="h-[165px] p-5 bg-white mb-4">
           <View className="flex-row w-full h-[42px]">
@@ -45,9 +49,9 @@ export default function TaskItem({ task }: { task: TaskItemProps }) {
               </View>
             </View>
 
-            <View className="ml-auto w-[40px] h-[32px] items-end">
+            <TouchableOpacity onPress={() => navigation.navigate("TaskEdit", { desafioId: task.participationId })} className="ml-auto w-[40px] h-[32px] items-end">
               <Gear />
-            </View>
+            </TouchableOpacity>
           </View>
 
           <View className="flex-row items-center gap-x-1 mt-3">

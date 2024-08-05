@@ -21,7 +21,7 @@ export interface Data {
   usersId: string;
 }
 
-export default function DesafioList({ route }: any) {
+export default function TaskList({ route }: any) {
   const { desafioId, desafioName }: { desafioId: number; desafioName: string } = route.params;
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
@@ -97,7 +97,7 @@ export default function DesafioList({ route }: any) {
             <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Via Apple Saúde</Text>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate("DesafioEdit", { pageType: "create", desafioId, desafioName })} className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
+            <TouchableOpacity onPress={() => navigation.navigate("TaskCreate", { desafioId, desafioName })} className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Cadastrar manualmente</Text>
             </TouchableOpacity>
           </View>

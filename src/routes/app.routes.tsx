@@ -3,10 +3,13 @@ import Profile from "../pages/profile";
 import Map from "../pages/Map";
 import MenuConfigurations from "../pages/profileConfigurations";
 import ProfileEdit from "../pages/profileEdit";
-import DesafioEdit from "../pages/desafioEdit";
+import DesafioEdit from "../pages/taskCreate";
 import DesafioSelect from "../pages/desafioSelect";
-import DesafioList from "../pages/desafioList";
+import DesafioList from "../pages/taskList";
 import Teste from "../pages/teste";
+import TaskCreate from "../pages/taskCreate";
+import TaskList from "../pages/taskList";
+import TaskEdit from "../pages/taskEdit";
 
 const App = createNativeStackNavigator();
 
@@ -23,8 +26,9 @@ export default function AppRoutes() {
       <App.Screen name="Configurations" component={MenuConfigurations} />
       <App.Screen name="ProfileEdit" component={ProfileEdit} />
       <App.Screen name="DesafioSelect" component={DesafioSelect} />
-      <App.Screen name="DesafioEdit" component={DesafioEdit} />
-      <App.Screen name="DesafioList" component={DesafioList} />
+      <App.Screen name="TaskCreate" component={TaskCreate} />
+      <App.Screen name="TaskEdit" component={TaskEdit} />
+      <App.Screen name="TaskList" component={TaskList} />
       <App.Screen name="Teste" component={Teste} />
       
     </App.Navigator>
