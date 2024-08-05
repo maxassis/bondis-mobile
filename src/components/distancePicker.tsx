@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import WheelPicker from 'react-native-wheely';
 
@@ -15,17 +15,32 @@ export interface KilometerMeterPickerModalRef {
 export interface KilometerMeterPickerModalProps {
   visible: boolean;
   onClose: ({ kilometers, meters} : Distance) => void;
+  onlyClose: (status : boolean) => void
 }
 
 const KilometerMeterPickerModal = forwardRef<KilometerMeterPickerModalRef, KilometerMeterPickerModalProps>(
-  ({ onClose, visible  }, ref) => {
+  ({ onClose, visible, onlyClose  }, ref) => {
   const [selectedKilometer, setSelectedKilometer] = useState<number>(0);
   const [selectedHundreds, setSelectedHundreds] = useState<number>(0);
   const [selectedTens, setSelectedTens] = useState<number>(0);
   const [selectedUnits, setSelectedUnits] = useState<number>(0);
 
+  const [initialKilometer, setInitialKilometer] = useState<number>(0);
+  const [initialHundreds, setInitialHundreds] = useState<number>(0);
+  const [initialTens, setInitialTens] = useState<number>(0);
+  const [initialUnits, setInitialUnits] = useState<number>(0);
+
   const kilometers = [...Array(1000).keys()].map(String);
   const digitOptions = [...Array(10).keys()].map(String);
+
+  useEffect(() => {
+    if (visible) {
+      setInitialKilometer(selectedKilometer);
+      setInitialHundreds(selectedHundreds);
+      setInitialTens(selectedTens);
+      setInitialUnits(selectedUnits);
+    }
+  }, [visible]);
 
   useImperativeHandle(ref, () => ({
     clearDistance, changeDistance
@@ -44,10 +59,18 @@ const KilometerMeterPickerModal = forwardRef<KilometerMeterPickerModalRef, Kilom
   }
 
   function changeDistance(km: number, mt: number) {
-     setSelectedKilometer(km);
+     setSelectedKilometer(km ? km : 0);
      setSelectedHundreds(Math.floor(mt / 100));
      setSelectedTens(Math.floor((mt % 100) / 10));
      setSelectedUnits(mt % 10);
+  }
+
+  function handleCancel() {
+    setSelectedKilometer(initialKilometer);
+    setSelectedHundreds(initialHundreds);
+    setSelectedTens(initialTens);
+    setSelectedUnits(initialUnits);
+    onlyClose(false);
   }
 
   return (
@@ -102,9 +125,14 @@ const KilometerMeterPickerModal = forwardRef<KilometerMeterPickerModalRef, Kilom
               Total: {selectedKilometer} km {getTotalMeters()} m
             </Text>
           </View>
-          <TouchableOpacity onPress={() => onClose({ kilometers: selectedKilometer, meters: getTotalMeters() })} className='mt-5 py-[10px] px-5 rounded-[5px] bg-bondis-green'>
-            <Text className='font-inter-bold text-black'>Selecionar</Text>
+          <View className='flex-row items-center gap-x-4'>
+          <TouchableOpacity onPress={handleCancel} className='mt-5 justify-center items-center py-[10px] px-5 rounded-[5px] border-[1px] border-[#D9D9D9]'>
+            <Text>Cancelar</Text>
+          </TouchableOpacity>  
+          <TouchableOpacity onPress={() => onClose({ kilometers: selectedKilometer, meters: getTotalMeters() })} className='mt-5 py-[10px] px-5 rounded-[5px] bg-bondis-green justify-center items-center'>
+            <Text>Selecionar</Text>
           </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>

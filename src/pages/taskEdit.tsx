@@ -73,8 +73,6 @@ export default function TaskEdit({ route }: any) {
     }
   };
 
-  ChangeDistancePicker()
-
   useEffect(() => {
     // console.log(taskData)
     setActivityName(taskData.name)
@@ -202,6 +200,7 @@ export default function TaskEdit({ route }: any) {
           onClose={({ kilometers, meters }: Distance) =>
             closeModalDistance({ kilometers, meters })
           }
+          onlyClose={setModalVisible}
         />
         <TouchableOpacity
           onPress={() => setModalVisible(true)}

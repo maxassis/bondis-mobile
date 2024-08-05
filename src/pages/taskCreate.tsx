@@ -223,6 +223,7 @@ export default function TaskCreate({ route }: any) {
           onClose={({ kilometers, meters }: Distance) =>
             closeModalDistance({ kilometers, meters })
           }
+          onlyClose={setModalVisible}
         />
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
