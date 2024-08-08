@@ -19,7 +19,7 @@ export default function AppRoutes() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="Teste"
+      initialRouteName="Profile"
     >
       <App.Screen name="Profile" component={Profile} />
       <App.Screen name="Map" component={Map} />
