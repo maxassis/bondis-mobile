@@ -23,6 +23,7 @@ import Left from "../../assets/Icon-left.svg";
 import { Data } from "./taskList";
 import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
 import { ptBR } from "../utils/localeCalendar";
+import dayjs from 'dayjs';
 
 LocaleConfig.locales["pt-br"] = ptBR;
 LocaleConfig.defaultLocale = "pt-br";
@@ -54,6 +55,7 @@ export default function TaskEdit({ route }: any) {
   const childRef = useRef<KilometerMeterPickerModalRef>(null);
   const [day, setDay] = useState<DateData>({} as DateData);
   const [calendar, setCalendarVisible] = useState(false);
+  const [initialDate, setInitialDate] = useState<string>();
 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
@@ -83,6 +85,13 @@ export default function TaskEdit({ route }: any) {
     setLocal(taskData.local!);
     setAmbience(taskData.environment);
     ChangeDistancePicker();
+    setInitialDate(dayjs(taskData.date).format('YYYY-MM-DD'));
+
+      if(initialDate) {
+        
+       setDay({ dateString: initialDate, day: +initialDate!.split("-")[2], month: +initialDate!.split("-")[1], year: +initialDate!.split("-")[0], timestamp: 0 });
+
+      }
   }, []);
 
   function updateTaskData() {
@@ -113,7 +122,6 @@ export default function TaskEdit({ route }: any) {
     const [year, month, day] = date.dateString.split('-').map(Number);
     const isoDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)); 
 
-    // Formata a data para YYYY-MM-DDTHH:MM:SSZ
     const formattedDate = isoDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
 
     return formattedDate;
@@ -180,12 +188,12 @@ export default function TaskEdit({ route }: any) {
           </TouchableOpacity>
         </View>
 
-        <Text className="font-inter-bold text-base mt-7">Data {formatDateToISO(day)}</Text>
+        <Text className="font-inter-bold text-base mt-7">Data</Text>
         <TouchableOpacity
           onPress={() => setCalendarVisible(true)}
           className="bg-bondis-text-gray rounded-[4px] h-[52px] flex-row mt-2 items-center justify-between pr-[22px] pl-4" 
         >
-          <Text>{day.day}/{day.month}/{day.year}</Text>
+          <Text>{initialDate ? dayjs(initialDate).format('DD/MM/YYYY') : dayjs(day.dateString).format('DD/MM/YYYY') }</Text>
           <Down />
         </TouchableOpacity>
         <Modal
@@ -198,6 +206,7 @@ export default function TaskEdit({ route }: any) {
               <Pressable>
                 <View className="bg-white p-6 rounded-lg shadow-lg w-80">
                   <Calendar
+                    current=""
                     className="rounded-lg"
                     theme={{
                       todayTextColor: "#EB4335",
@@ -206,8 +215,12 @@ export default function TaskEdit({ route }: any) {
                       arrowColor: "#12FF55",
                       textMonthFontWeight: "bold",
                     }}
-                    onDayPress={setDay}
-                    markedDates={{ [day.dateString]: { selected: true } }}
+                    onDayPress={(day: DateData) => {
+                      setInitialDate("")
+                      setDay(day);
+                      setCalendarVisible(false);
+                    }}
+                    markedDates={{ [initialDate ? initialDate : day.dateString]: { selected: true } }}
                   />
                 </View>
               </Pressable>
@@ -307,3 +320,12 @@ const buttonDisabled = cva(
     },
   }
 );
+
+
+
+// useEffect(() => {
+//   if (taskData?.date) {
+//     setInitialDate(taskData.date); // assuming taskData.date is in "YYYY-MM-DD" format
+//     setDay({ dateString: taskData.date, day: 1, month: 8, year: 2024 });
+//   }
+// }, []);
