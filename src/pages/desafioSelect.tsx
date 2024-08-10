@@ -42,9 +42,7 @@ export default function DesafioSelect() {
     })
       .then((response) => response.json() as Promise<DesafioData>)
       .then((res) => { 
-        setDesafios(res)
-        console.log(res);
-        
+        setDesafios(res)   
       });
   }, []);
 

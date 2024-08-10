@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   View,
   TextInput,
+  Modal,
+  Pressable
 } from "react-native";
 import KilometerMeterPicker, { KilometerMeterPickerModalRef } from "../components/distancePicker";
 import Left from "../../assets/arrow-left.svg";
@@ -16,6 +18,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { cva } from "class-variance-authority";
 import Down from "../../assets/down.svg";
 import tokenExists from "../store/auth";
+import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
+import { ptBR } from "../utils/localeCalendar";
+import dayjs from 'dayjs';
+
+LocaleConfig.locales["pt-br"] = ptBR;
+LocaleConfig.defaultLocale = "pt-br";
 
 const ambienceType = cva(
   "h-[37px] rounded-full justify-center items-center flex-row gap-x-[8px] border-[1px] border-[#D9D9D9] pr-4 pl-2",
@@ -54,12 +62,19 @@ export default function TaskCreate({ route }: any) {
   const [activityName, setActivityName] = useState("");
   const [calories, setCalories] = useState("");
   const [local, setLocal] = useState("");
+  const [day, setDay] = useState<DateData>({
+    year: 0,
+    month: 0,
+    day: 0,
+    timestamp: 0,
+    dateString: dayjs().format('YYYY-MM-DD')
+});
+  const [calendar, setCalendarVisible] = useState(false);
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
   const { desafioId, desafioName }: RouteParams = route.params;
   const childRef = useRef<KilometerMeterPickerModalRef>(null);
 
- 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
     setModalVisible(false);
@@ -83,11 +98,14 @@ export default function TaskCreate({ route }: any) {
          "distance": +`${distance.kilometers}.${distance.meters}`,
          "environment": ambience,
          "calories": +calories,
-         "participationId": desafioId
+         "participationId": desafioId,
+         "date": !day ? formatDateToISO(dayjs().format('YYYY-MM-DD')) : formatDateToISO(day.dateString)
        })
     })
     .then(response => response.json())
-    .then(json => {
+    .then(json => {      
+      console.log(json);
+      
       navigation.navigate("TaskList", {desafioId, desafioName})
       clearInputs()
     })
@@ -102,6 +120,17 @@ export default function TaskCreate({ route }: any) {
     setLocal("");
     handleClearDistance();
   }
+
+  const formatDateToISO = (date: string) => {
+    if (!date) return null;
+
+    const [year, month, day] = date.split('-').map(Number);
+    const isoDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)); 
+
+    const formattedDate = isoDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
+
+    return formattedDate;
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
@@ -173,9 +202,40 @@ export default function TaskCreate({ route }: any) {
         </View>
 
         <Text className="font-inter-bold text-base mt-7">Data</Text>
-        <TouchableOpacity className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]">
+        <TouchableOpacity onPress={() => setCalendarVisible(true)} className="bg-bondis-text-gray rounded-[4px] h-[52px] flex-row mt-2 items-center justify-between pr-[22px] pl-4">
+          <Text>{dayjs(day.dateString).format('DD/MM/YYYY')}</Text>
           <Down />
         </TouchableOpacity>
+        <Modal
+          transparent={true}
+          visible={calendar}
+          onRequestClose={() => setCalendarVisible(false)}
+        >
+          <Pressable style={{ flex: 1 }} onPress={() => setCalendarVisible(false)}>
+            <View className="flex-1 justify-center items-center bg-black/50">
+              <Pressable>
+                <View className="bg-white p-6 rounded-lg shadow-lg w-80">
+                  <Calendar
+                    // current={day}
+                    className="rounded-lg"
+                    theme={{
+                      todayTextColor: "#EB4335",
+                      selectedDayTextColor: "black",
+                      selectedDayBackgroundColor: "#12FF55",
+                      arrowColor: "#12FF55",
+                      textMonthFontWeight: "bold",
+                    }}
+                    onDayPress={(day: DateData) => {
+                      setDay(day);
+                      setCalendarVisible(false);
+                    }}
+                    markedDates={{ [day.dateString]: { selected: true } }}
+                  />
+                </View>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Modal>
 
         <Text className="font-inter-bold text-base mt-7">
           Duração da atividade
