@@ -99,7 +99,8 @@ export default function TaskCreate({ route }: any) {
          "environment": ambience,
          "calories": +calories,
          "participationId": desafioId,
-         "date": !day ? formatDateToISO(dayjs().format('YYYY-MM-DD')) : formatDateToISO(day.dateString)
+         "date": !day ? formatDateToISO(dayjs().format('YYYY-MM-DD')) : formatDateToISO(day.dateString),
+         "duration": "2024-08-13T10:30:20Z",
        })
     })
     .then(response => response.json())

@@ -5,6 +5,7 @@ import Pin from "../../assets/map-pin.svg";
 import Gear from "../../assets/settings-black.svg";
 import Link from "../../assets/link.svg";
 import { useNavigation } from "@react-navigation/native";
+import dayjs from 'dayjs'
 
 export interface TaskItemProps {
   id: number
@@ -64,7 +65,7 @@ export default function TaskItem({ task }: { task: TaskItemProps }) {
                 <Text className="text-bondis-gray-dark text-[10px]">KM</Text>
             </View>
             <View className="w-[98px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">
-                <Text className="text-[18px] font-inter-bold">{task.duration}</Text>
+                <Text className="text-[18px] font-inter-bold">{ dayjs(task.duration).format('HH:mm:ss') }</Text>
                 <Text className="text-bondis-gray-dark text-[10px]">DURAÇÃO</Text>
             </View>
             <View className="w-[98px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">

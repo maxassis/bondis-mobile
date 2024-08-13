@@ -55,7 +55,7 @@ export default function TaskEdit({ route }: any) {
   const childRef = useRef<KilometerMeterPickerModalRef>(null);
   const [day, setDay] = useState<DateData>({} as DateData);
   const [calendar, setCalendarVisible] = useState(false);
-  const [initialDate, setInitialDate] = useState<string>();
+  const [initialDate, setInitialDate] = useState<any>();
 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
@@ -85,13 +85,8 @@ export default function TaskEdit({ route }: any) {
     setLocal(taskData.local!);
     setAmbience(taskData.environment);
     ChangeDistancePicker();
-    setInitialDate(dayjs(taskData.date).format('YYYY-MM-DD'));
-
-      if(initialDate) {
-        
-       setDay({ dateString: initialDate, day: +initialDate!.split("-")[2], month: +initialDate!.split("-")[1], year: +initialDate!.split("-")[0], timestamp: 0 });
-
-      }
+    setInitialDate(dayjs(taskData.date).format('YYYY-MM-DD'));        
+    initialDate && setDay({ dateString: initialDate, day: +initialDate!.split("-")[2], month: +initialDate!.split("-")[1], year: +initialDate!.split("-")[0], timestamp: 0 });  
   }, []);
 
   function updateTaskData() {
@@ -105,7 +100,9 @@ export default function TaskEdit({ route }: any) {
         name: activityName,
         distanceKm: +`${distance.kilometers}.${distance.meters}`,
         environment: ambience,
-        date: formatDateToISO(day),
+        date: initialDate ? formatDateToISO(initialDate) : formatDateToISO(day.dateString),
+        // date: "2024-08-13T10:30:20Z",
+        duration: "2024-08-13T10:30:20Z",
       }),
     })
       .then((response) => response.json())
@@ -116,10 +113,10 @@ export default function TaskEdit({ route }: any) {
       .catch((error) => console.error(error));
   }
 
-  const formatDateToISO = (date: DateData) => {
-    if (!date.dateString) return null;
+  const formatDateToISO = (date: string) => {
+    if (!date) return null;
 
-    const [year, month, day] = date.dateString.split('-').map(Number);
+    const [year, month, day] = date.split('-').map(Number);
     const isoDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)); 
 
     const formattedDate = isoDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
@@ -139,7 +136,7 @@ export default function TaskEdit({ route }: any) {
             <Left />
           </TouchableOpacity>
           <Text className="text-base font-inter-bold mx-auto ">
-            Editar atividade
+            Editar atividade 
           </Text>
         </View>
 
