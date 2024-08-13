@@ -1,157 +1,125 @@
-// import { useState } from 'react';
-// import { View, Modal } from 'react-native';
-// import { Calendar, DateData, LocaleConfig } from 'react-native-calendars';
-// import { ptBR } from '../utils/localeCalendar'; 
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { View, Text, Modal, TouchableOpacity } from 'react-native';
+import WheelPicker from 'react-native-wheely';
 
-// LocaleConfig.locales['pt-br'] = ptBR;
-// LocaleConfig.defaultLocale = 'pt-br';
+interface Time {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
 
-// const Teste = () => {
-//   const [day, setDay] = useState<DateData>({} as DateData);
+export interface TimePickerModalRef {
+  clearTime: () => void;
+  changeTime: (hours: number, minutes: number, seconds: number) => void;
+}
 
+export interface TimePickerModalProps {
+  visible: boolean;
+  onClose: ({ hours, minutes, seconds }: Time) => void;
+  onlyClose: (status: boolean) => void;
+}
 
-//   return (
-//     <View className='flex-1 bg-black'>
+const TimePickerModal = forwardRef<TimePickerModalRef, TimePickerModalProps>(
+  ({ onClose, visible, onlyClose }, ref) => {
+    const [selectedHours, setSelectedHours] = useState<number>(0);
+    const [selectedMinutes, setSelectedMinutes] = useState<number>(0);
+    const [selectedSeconds, setSelectedSeconds] = useState<number>(0);
 
-//       <View className='my-auto'>
-//         <Calendar
-//         className="rounded-lg mx-3"
-//         theme={{
-//           todayTextColor: '#EB4335',
-//           selectedDayTextColor: 'black',
-//           selectedDayBackgroundColor: '#12FF55',
-//           arrowColor: '#12FF55',
-//           textMonthFontWeight: 'bold',
-//         }}
-//         onDayPress={setDay}
-//         markedDates={{ [day.dateString]: { selected: true } }}
-//         />
-//       </View>
-     
-//     </View>
-//   );
-// };
+    const [initialHours, setInitialHours] = useState<number>(0);
+    const [initialMinutes, setInitialMinutes] = useState<number>(0);
+    const [initialSeconds, setInitialSeconds] = useState<number>(0);
 
+    const hours = [...Array(24).keys()].map(String); // 0 to 23 hours
+    const minutesAndSeconds = [...Array(60).keys()].map(String); // 0 to 59 minutes/seconds
 
-// export default Teste;
+    useEffect(() => {
+      if (visible) {
+        setInitialHours(selectedHours);
+        setInitialMinutes(selectedMinutes);
+        setInitialSeconds(selectedSeconds);
+      }
+    }, [visible]);
 
-// import React, { useState } from 'react';
-// import { View, Modal, TouchableOpacity, Text, Pressable } from 'react-native';
-// import { Calendar, DateData, LocaleConfig } from 'react-native-calendars';
-// import { ptBR } from '../utils/localeCalendar'; 
+    useImperativeHandle(ref, () => ({
+      clearTime,
+      changeTime,
+    }));
 
-// LocaleConfig.locales['pt-br'] = ptBR;
-// LocaleConfig.defaultLocale = 'pt-br';
+    function clearTime() {
+      setSelectedHours(0);
+      setSelectedMinutes(0);
+      setSelectedSeconds(0);
+    }
 
-// const Teste = () => {
-//   const [day, setDay] = useState<DateData>({} as DateData);
-//   const [modalVisible, setModalVisible] = useState(false);
+    function changeTime(hours: number, minutes: number, seconds: number) {
+      setSelectedHours(hours || 0);
+      setSelectedMinutes(minutes || 0);
+      setSelectedSeconds(seconds || 0);
+    }
 
-//   return (
-//     <>
-//       <TouchableOpacity onPress={() => setModalVisible(true)} className="bg-green-500 p-4 rounded-lg">
-//         <Text className="text-white font-bold">Abrir Calendário</Text>
-//       </TouchableOpacity>
+    function handleCancel() {
+      setSelectedHours(initialHours);
+      setSelectedMinutes(initialMinutes);
+      setSelectedSeconds(initialSeconds);
+      onlyClose(false);
+    }
 
-//       <Modal
-//         transparent={true}
-//         visible={modalVisible}
-//         onRequestClose={() => setModalVisible(false)} // Para fechar o modal ao pressionar o botão "voltar" no Android
-//       >
-//         <Pressable style={{ flex: 1 }} onPress={() => setModalVisible(false)}>
-//           <View className='flex-1 justify-center items-center bg-black/50'>
-//             <Pressable>
-//               <View className='bg-white p-6 rounded-lg shadow-lg w-80'>
-                
-//                 {/* Calendário */}
-//                 <Calendar
-//                   className="rounded-lg"
-//                   theme={{
-//                     todayTextColor: '#EB4335',
-//                     selectedDayTextColor: 'black',
-//                     selectedDayBackgroundColor: '#12FF55',
-//                     arrowColor: '#12FF55',
-//                     textMonthFontWeight: 'bold',
-//                   }}
-//                   onDayPress={setDay}
-//                   markedDates={{ [day.dateString]: { selected: true } }}
-//                 />
-
-//               </View>
-//             </Pressable>
-//           </View>
-//         </Pressable>
-//       </Modal>
-//     </>
-//   );
-// };
-
-// export default Teste;
-
-import React, { useState } from 'react';
-import { View, Modal, TouchableOpacity, Text, Pressable, Picker, Platform } from 'react-native';
-import { Calendar, DateData, LocaleConfig } from 'react-native-calendars';
-import { ptBR } from '../utils/localeCalendar'; 
-
-LocaleConfig.locales['pt-br'] = ptBR;
-LocaleConfig.defaultLocale = 'pt-br';
-
-const Teste = () => {
-  const [day, setDay] = useState<DateData>({} as DateData);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-
-  const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i); // Últimos 100 anos
-
-  return (
-    <>
-      <TouchableOpacity onPress={() => setModalVisible(true)} className="bg-green-500 p-4 rounded-lg">
-        <Text className="text-white font-bold">Abrir Calendário</Text>
-      </TouchableOpacity>
-
+    return (
       <Modal
         transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)} 
+        visible={visible}
       >
-        <Pressable style={{ flex: 1 }} onPress={() => setModalVisible(false)}>
-          <View className='flex-1 justify-center items-center bg-black/50'>
-            <Pressable>
-              <View className='bg-white p-6 rounded-lg shadow-lg w-80'>
-                
-                {/* Seletor de Ano */}
-                <Picker
-                  selectedValue={selectedYear}
-                  style={{ height: 50, width: 150 }}
-                  onValueChange={(itemValue) => setSelectedYear(itemValue as number)}
-                >
-                  {years.map(year => (
-                    <Picker.Item key={year} label={`${year}`} value={year} />
-                  ))}
-                </Picker>
-
-                {/* Calendário */}
-                <Calendar
-                  current={`${selectedYear}-01-01`}
-                  className="rounded-lg"
-                  theme={{
-                    todayTextColor: '#EB4335',
-                    selectedDayTextColor: 'black',
-                    selectedDayBackgroundColor: '#12FF55',
-                    arrowColor: '#12FF55',
-                    textMonthFontWeight: 'bold',
-                  }}
-                  onDayPress={setDay}
-                  markedDates={{ [day.dateString]: { selected: true } }}
+        <View className="flex-1 justify-center items-center bg-bondis-overlay">
+          <View className='w-[350px] bg-white p-5 rounded-[10px] items-center'>
+            <Text className='text-lg text-center'>Selecione a duração:</Text>
+            <View className='flex-row justify-around items-center w-[95%]'>
+              <View className='flex-row items-center'>
+                <WheelPicker
+                  selectedIndex={selectedHours}
+                  options={hours}
+                  onChange={(index) => setSelectedHours(index)}
+                  containerStyle={{ width: 50 }}
                 />
-
+                <Text className='font-inter-bold ml-[5px]'>HH</Text>
               </View>
-            </Pressable>
+                <View className='flex-row items-center'>
+                  <WheelPicker
+                    selectedIndex={selectedMinutes}
+                    options={minutesAndSeconds}
+                    onChange={(index) => setSelectedMinutes(index)}
+                    containerStyle={{ width: 50 }}
+                  />
+                  <Text className='font-inter-bold ml-[5px]'>MM</Text>
+                </View>
+              
+                <View className='flex-row items-center'>
+                  <WheelPicker
+                    selectedIndex={selectedSeconds}
+                    options={minutesAndSeconds}
+                    onChange={(index) => setSelectedSeconds(index)}
+                    containerStyle={{ width: 50 }}
+                  />
+                  <Text className='font-inter-bold ml-[5px]'>SS</Text>
+                </View>
+            </View>
+            <View className='mt-5 items-center'>
+              <Text className='text-lg items-center font-inter-bold'>
+                Total: {selectedHours.toString().padStart(2, '0')}:{selectedMinutes.toString().padStart(2, '0')}:{selectedSeconds.toString().padStart(2, '0')}
+              </Text>
+            </View>
+            <View className='flex-row items-center gap-x-4'>
+              <TouchableOpacity onPress={handleCancel} className='mt-5 justify-center items-center py-[10px] px-5 rounded-[5px] border-[1px] border-[#D9D9D9]'>
+                <Text>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => onClose({ hours: selectedHours, minutes: selectedMinutes, seconds: selectedSeconds })} className='mt-5 py-[10px] px-5 rounded-[5px] bg-bondis-green justify-center items-center'>
+                <Text>Selecionar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </Pressable>
+        </View>
       </Modal>
-    </>
-  );
-};
+    );
+  }
+);
 
-export default Teste;
+export default TimePickerModal;
