@@ -83,9 +83,7 @@ export default function TaskEdit({ route }: any) {
     }
   };
 
-  const ChangeTimePicker = () => {
-    console.log("chamou o time picker");
-    
+  const ChangeTimePicker = () => {    
     if (timePickerRef.current) {
       const timeFormated = convertISOToTime(taskData.duration!)
       timePickerRef.current.changeTime(+timeFormated.split(":")[0].padStart(2, '0'), +timeFormated.split(":")[1].padStart(2, '0'), +timeFormated.split(":")[2].padStart(2, '0'));
@@ -153,16 +151,10 @@ export default function TaskEdit({ route }: any) {
   }
 
   function convertTimeToISO(time: string): string {
-    // Obter a data atual
-    const currentDate = new Date();
-  
-    // Extrair horas, minutos e segundos do tempo fornecido
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-  
-    // Ajustar o objeto Date para usar as horas, minutos e segundos fornecidos
+    const currentDate = new Date();  
+    const [hours, minutes, seconds] = time.split(':').map(Number);  
     currentDate.setUTCHours(hours, minutes, seconds, 0);
   
-    // Retornar a data no formato ISO 8601 com o sufixo 'Z'
     return currentDate.toISOString();
   }
 
@@ -178,7 +170,7 @@ export default function TaskEdit({ route }: any) {
             <Left />
           </TouchableOpacity>
           <Text className="text-base font-inter-bold mx-auto ">
-            Editar atividade { JSON.stringify(selectedTime) }
+            Editar atividade 
           </Text>
         </View>
 

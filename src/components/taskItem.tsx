@@ -20,6 +20,16 @@ export interface TaskItemProps {
   usersId: string
 }
 
+function convertISOToTime(isoString: string): string {
+  const date = new Date(isoString);  
+  const hours = date.getUTCHours().toString().padStart(2, '0');
+  const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+  const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+
+  return `${hours}:${minutes}:${seconds}`;
+}
+
+
 export default function TaskItem({ task }: { task: TaskItemProps }) {
     const navigation = useNavigation<any>();
 
@@ -65,7 +75,7 @@ export default function TaskItem({ task }: { task: TaskItemProps }) {
                 <Text className="text-bondis-gray-dark text-[10px]">KM</Text>
             </View>
             <View className="w-[100px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">
-                <Text className="text-[18px] font-inter-bold">{ dayjs(task.duration).format('HH:mm:ss') }</Text>
+                <Text className="text-[18px] font-inter-bold">{ convertISOToTime(task.duration!) }</Text>
                 <Text className="text-bondis-gray-dark text-[10px]">DURAÇÃO</Text>
             </View>
             <View className="w-[98px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">

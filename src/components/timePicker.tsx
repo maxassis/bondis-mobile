@@ -51,13 +51,10 @@ const TimePickerModal = forwardRef<TimePickerModalRef, TimePickerModalProps>(
       setSelectedSeconds(0);
     }
 
-    function changeTime(hours: number, minutes: number, seconds: number) {
-     
+    function changeTime(hours: number, minutes: number, seconds: number) {      
       setSelectedHours(hours || 0);
       setSelectedMinutes(minutes || 0);
       setSelectedSeconds(seconds || 0);
-
-      console.log(hours, minutes, seconds);
     }
 
     function handleCancel() {
