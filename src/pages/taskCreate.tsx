@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -21,29 +21,10 @@ import tokenExists from "../store/auth";
 import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
 import { ptBR } from "../utils/localeCalendar";
 import dayjs from 'dayjs';
+import TimePickerModal, { TimePickerModalRef } from "../components/timePicker";
 
 LocaleConfig.locales["pt-br"] = ptBR;
 LocaleConfig.defaultLocale = "pt-br";
-
-const ambienceType = cva(
-  "h-[37px] rounded-full justify-center items-center flex-row gap-x-[8px] border-[1px] border-[#D9D9D9] pr-4 pl-2",
-  {
-    variants: {
-      intent: {
-        livre: "border-0",
-        esteira: "border-0",
-      },
-    },
-  }
-);
-
-const buttonDisabled = cva("h-[52px] flex-row bg-bondis-green mt-8 mb-[32px] rounded-full justify-center items-center", {
-  variants: {
-    intent: {
-      disabled: "opacity-50",
-    },
-  },
-});
 
 interface Distance {
   kilometers: number;
@@ -70,15 +51,23 @@ export default function TaskCreate({ route }: any) {
     dateString: dayjs().format('YYYY-MM-DD')
 });
   const [calendar, setCalendarVisible] = useState(false);
+  const [isModalTimeVisible, setModalTimeVisible] = useState(false);
+  const [selectedTime, setSelectedTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
   const { desafioId, desafioName }: RouteParams = route.params;
   const childRef = useRef<KilometerMeterPickerModalRef>(null);
+  const timePickerRef = useRef<TimePickerModalRef>(null);
 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
     setModalVisible(false);
   }
+
+  function closeModalTime(time: { hours: number, minutes: number, seconds: number }) {
+    setSelectedTime(time);
+    setModalTimeVisible(false);
+  };
 
   const handleClearDistance = () => {
     if (childRef.current) {
@@ -100,7 +89,7 @@ export default function TaskCreate({ route }: any) {
          "calories": +calories,
          "participationId": desafioId,
          "date": !day ? formatDateToISO(dayjs().format('YYYY-MM-DD')) : formatDateToISO(day.dateString),
-         "duration": "2024-08-13T10:30:20Z",
+         "duration": convertTimeToISO(selectedTime.hours + ':' + selectedTime.minutes + ':' + selectedTime.seconds),
        })
     })
     .then(response => response.json())
@@ -127,11 +116,26 @@ export default function TaskCreate({ route }: any) {
 
     const [year, month, day] = date.split('-').map(Number);
     const isoDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)); 
-
     const formattedDate = isoDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
-
     return formattedDate;
   };
+
+  function convertTimeToISO(time: string): string {
+    const currentDate = new Date();  
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+    currentDate.setUTCHours(hours, minutes, seconds, 0);
+  
+    return currentDate.toISOString();
+  }
+
+  function convertISOToTime(isoString: string): string {
+    const date = new Date(isoString);  
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+  
+    return `${hours}:${minutes}:${seconds}`;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
@@ -150,7 +154,7 @@ export default function TaskCreate({ route }: any) {
         </View>
 
         <Text className="text-2xl font-inter-bold mt-7">
-          Como foi o sua atividade?
+          Como foi o sua atividade? 
         </Text>
 
         <Text className="font-inter-bold text-base mt-7">
@@ -241,9 +245,16 @@ export default function TaskCreate({ route }: any) {
         <Text className="font-inter-bold text-base mt-7">
           Duração da atividade
         </Text>
-        <TouchableOpacity className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]">
+        <TouchableOpacity onPress={() => setModalTimeVisible(true)} className="bg-bondis-text-gray rounded-[4px] h-[52px] flex-row mt-2 items-center justify-between pr-[22px] pl-4">
+          <Text>{ selectedTime.hours.toString().padStart(2, '0') + ':' + selectedTime.minutes.toString().padStart(2, '0') + ':' + selectedTime.seconds.toString().padStart(2, '0') } </Text>
           <Down />
         </TouchableOpacity>
+        <TimePickerModal
+        ref={timePickerRef}
+        visible={isModalTimeVisible}
+        onClose={closeModalTime}
+        onlyClose={setModalTimeVisible}
+        />
 
         <Text className="font-inter-bold text-base mt-7">
           Distancia percorrida
@@ -301,3 +312,23 @@ export default function TaskCreate({ route }: any) {
     </SafeAreaView>
   );
 }
+
+const ambienceType = cva(
+  "h-[37px] rounded-full justify-center items-center flex-row gap-x-[8px] border-[1px] border-[#D9D9D9] pr-4 pl-2",
+  {
+    variants: {
+      intent: {
+        livre: "border-0",
+        esteira: "border-0",
+      },
+    },
+  }
+);
+
+const buttonDisabled = cva("h-[52px] flex-row bg-bondis-green mt-8 mb-[32px] rounded-full justify-center items-center", {
+  variants: {
+    intent: {
+      disabled: "opacity-50",
+    },
+  },
+});

@@ -64,7 +64,7 @@ export default function TaskItem({ task }: { task: TaskItemProps }) {
                 <Text className="text-[18px] font-inter-bold">{task.distanceKm}</Text>
                 <Text className="text-bondis-gray-dark text-[10px]">KM</Text>
             </View>
-            <View className="w-[98px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">
+            <View className="w-[100px] h-[44px] border-l-2 border-[#D1D5DA] pl-2">
                 <Text className="text-[18px] font-inter-bold">{ dayjs(task.duration).format('HH:mm:ss') }</Text>
                 <Text className="text-bondis-gray-dark text-[10px]">DURAÇÃO</Text>
             </View>

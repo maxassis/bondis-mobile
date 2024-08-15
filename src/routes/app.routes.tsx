@@ -19,7 +19,7 @@ export default function AppRoutes() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="Teste"
+      initialRouteName="Profile"
     >
       <App.Screen name="Profile" component={Profile} />
       <App.Screen name="Map" component={Map} />
@@ -29,7 +29,7 @@ export default function AppRoutes() {
       <App.Screen name="TaskCreate" component={TaskCreate} />
       <App.Screen name="TaskEdit" component={TaskEdit} />
       <App.Screen name="TaskList" component={TaskList} />
-      <App.Screen name="Teste" component={Teste} />
+      {/* <App.Screen name="Teste" component={Teste} /> */}
       
     </App.Navigator>
   );

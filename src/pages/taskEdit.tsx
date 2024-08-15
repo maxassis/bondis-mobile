@@ -24,6 +24,8 @@ import { Data } from "./taskList";
 import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
 import { ptBR } from "../utils/localeCalendar";
 import dayjs from 'dayjs';
+import TimePickerModal, { TimePickerModalRef } from "../components/timePicker";
+
 
 LocaleConfig.locales["pt-br"] = ptBR;
 LocaleConfig.defaultLocale = "pt-br";
@@ -52,15 +54,23 @@ export default function TaskEdit({ route }: any) {
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
   const { desafioId, desafioName, taskData }: RouteParams = route.params;
-  const childRef = useRef<KilometerMeterPickerModalRef>(null);
   const [day, setDay] = useState<DateData>({} as DateData);
   const [calendar, setCalendarVisible] = useState(false);
   const [initialDate, setInitialDate] = useState<any>();
+  const [isModalTimeVisible, setModalTimeVisible] = useState(false);
+  const [selectedTime, setSelectedTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
+  const timePickerRef = useRef<TimePickerModalRef>(null)
+  const childRef = useRef<KilometerMeterPickerModalRef>(null);
 
   function closeModalDistance({ kilometers, meters }: Distance) {
     setDistance({ kilometers, meters });
     setModalVisible(false);
   }
+
+  function closeModalTime(time: { hours: number, minutes: number, seconds: number }) {
+    setSelectedTime(time);
+    setModalTimeVisible(false);
+  };
 
   const ChangeDistancePicker = () => {
     if (childRef.current) {
@@ -72,6 +82,15 @@ export default function TaskEdit({ route }: any) {
       );
     }
   };
+
+  const ChangeTimePicker = () => {
+    console.log("chamou o time picker");
+    
+    if (timePickerRef.current) {
+      const timeFormated = convertISOToTime(taskData.duration!)
+      timePickerRef.current.changeTime(+timeFormated.split(":")[0].padStart(2, '0'), +timeFormated.split(":")[1].padStart(2, '0'), +timeFormated.split(":")[2].padStart(2, '0'));
+    }
+  }
 
   useEffect(() => {
     setActivityName(taskData.name);
@@ -86,7 +105,10 @@ export default function TaskEdit({ route }: any) {
     setAmbience(taskData.environment);
     ChangeDistancePicker();
     setInitialDate(dayjs(taskData.date).format('YYYY-MM-DD'));        
-    initialDate && setDay({ dateString: initialDate, day: +initialDate!.split("-")[2], month: +initialDate!.split("-")[1], year: +initialDate!.split("-")[0], timestamp: 0 });  
+    initialDate && setDay({ dateString: initialDate, day: +initialDate!.split("-")[2], month: +initialDate!.split("-")[1], year: +initialDate!.split("-")[0], timestamp: 0 }); 
+    const timeFormated = convertISOToTime(taskData.duration!);
+    setSelectedTime({ hours: +timeFormated.split(":")[0], minutes: +timeFormated.split(":")[1], seconds: +timeFormated.split(":")[2] });
+    ChangeTimePicker()
   }, []);
 
   function updateTaskData() {
@@ -101,8 +123,7 @@ export default function TaskEdit({ route }: any) {
         distanceKm: +`${distance.kilometers}.${distance.meters}`,
         environment: ambience,
         date: initialDate ? formatDateToISO(initialDate) : formatDateToISO(day.dateString),
-        // date: "2024-08-13T10:30:20Z",
-        duration: "2024-08-13T10:30:20Z",
+        duration: convertTimeToISO(selectedTime.hours.toString().padStart(2, '0') + ':' + selectedTime.minutes.toString().padStart(2, '0') + ':' + selectedTime.seconds.toString().padStart(2, '0')),
       }),
     })
       .then((response) => response.json())
@@ -118,11 +139,32 @@ export default function TaskEdit({ route }: any) {
 
     const [year, month, day] = date.split('-').map(Number);
     const isoDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)); 
-
     const formattedDate = isoDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
-
     return formattedDate;
   };
+
+  function convertISOToTime(isoString: string): string {
+    const date = new Date(isoString);  
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+  
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  function convertTimeToISO(time: string): string {
+    // Obter a data atual
+    const currentDate = new Date();
+  
+    // Extrair horas, minutos e segundos do tempo fornecido
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+  
+    // Ajustar o objeto Date para usar as horas, minutos e segundos fornecidos
+    currentDate.setUTCHours(hours, minutes, seconds, 0);
+  
+    // Retornar a data no formato ISO 8601 com o sufixo 'Z'
+    return currentDate.toISOString();
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
@@ -136,7 +178,7 @@ export default function TaskEdit({ route }: any) {
             <Left />
           </TouchableOpacity>
           <Text className="text-base font-inter-bold mx-auto ">
-            Editar atividade 
+            Editar atividade { JSON.stringify(selectedTime) }
           </Text>
         </View>
 
@@ -228,9 +270,16 @@ export default function TaskEdit({ route }: any) {
         <Text className="font-inter-bold text-base mt-7">
           Duração da atividade
         </Text>
-        <TouchableOpacity className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 items-end justify-center pr-[22px]">
+        <TouchableOpacity onPress={() => setModalTimeVisible(true)} className="bg-bondis-text-gray rounded-[4px] h-[52px] flex-row mt-2 items-center justify-between pr-[22px] pl-4">
+          <Text>{ selectedTime.hours.toString().padStart(2, '0') + ':' + selectedTime.minutes.toString().padStart(2, '0') + ':' + selectedTime.seconds.toString().padStart(2, '0') }</Text>
           <Down />
         </TouchableOpacity>
+        <TimePickerModal
+        ref={timePickerRef}
+        visible={isModalTimeVisible}
+        onClose={closeModalTime}
+        onlyClose={setModalTimeVisible}
+        />
 
         <Text className="font-inter-bold text-base mt-7">
           Distancia percorrida
