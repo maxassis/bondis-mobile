@@ -22,15 +22,16 @@ export interface Data {
 }
 
 export default function TaskList({ route }: any) {
-  const { desafioId, desafioName }: { desafioId: number; desafioName: string } = route.params;
+  const { participationId, desafioName }: { participationId: number; desafioName: string } = route.params;
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
   const [data, setData] = useState<TasksData>();
+  const [task, setTask] = useState<Data>();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["30%"], []);
 
   const fetchTasks = useCallback(() => {
-    fetch(`http://172.22.0.1:3000/tasks/get-tasks/${desafioId}`, {
+    fetch(`http://172.22.0.1:3000/tasks/get-tasks/26`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +43,7 @@ export default function TaskList({ route }: any) {
         setData(data);
       })
       .catch((error) => console.error(error));
-  }, [desafioId, token]);
+  }, [participationId, token]);
 
   useFocusEffect(
     useCallback(() => {
@@ -72,7 +73,9 @@ export default function TaskList({ route }: any) {
         </View>
 
         {data && data.map((task) => (
-          <TaskItem task={task} key={task.id} />
+          <TouchableOpacity onPress={() => setTask(task)}>
+             <TaskItem task={task} key={task.id} participationId={participationId} desafioName={desafioName} />
+          </TouchableOpacity>
         ))}
 
       </ScrollView>
@@ -104,7 +107,7 @@ export default function TaskList({ route }: any) {
             <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Via Apple Saúde</Text>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate("TaskCreate", { desafioId, desafioName })} className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
+            <TouchableOpacity onPress={() => navigation.navigate("TaskCreate", { participationId, desafioName })}  className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Cadastrar manualmente</Text>
             </TouchableOpacity>
           </View>

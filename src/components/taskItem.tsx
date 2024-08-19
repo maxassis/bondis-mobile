@@ -30,7 +30,7 @@ function convertISOToTime(isoString: string): string {
 }
 
 
-export default function TaskItem({ task }: { task: TaskItemProps }) {
+export default function TaskItem({ task, participationId, desafioName }: { task: TaskItemProps, participationId: number, desafioName: string }) {
     const navigation = useNavigation<any>();
 
     return(
@@ -59,7 +59,7 @@ export default function TaskItem({ task }: { task: TaskItemProps }) {
               </View>
             </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate("TaskEdit", { desafioId: task.participationId, taskData: task })} className="ml-auto w-[40px] h-[32px] items-end">
+            <TouchableOpacity onPress={() => navigation.navigate("TaskEdit", { participationId: participationId, taskData: task, desafioName })} className="ml-auto w-[40px] h-[32px] items-end">
               <Gear />
             </TouchableOpacity>
           </View>

@@ -24,8 +24,10 @@ import { Data } from "./taskList";
 import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
 import { ptBR } from "../utils/localeCalendar";
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import TimePickerModal, { TimePickerModalRef } from "../components/timePicker";
 
+dayjs.extend(utc);
 
 LocaleConfig.locales["pt-br"] = ptBR;
 LocaleConfig.defaultLocale = "pt-br";
@@ -36,7 +38,7 @@ interface Distance {
 }
 
 interface RouteParams {
-  desafioId: number;
+  participationId: number;
   desafioName: string;
   taskData: Data;
 }
@@ -53,7 +55,7 @@ export default function TaskEdit({ route }: any) {
   const [local, setLocal] = useState("");
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
-  const { desafioId, desafioName, taskData }: RouteParams = route.params;
+  const { participationId, desafioName, taskData }: RouteParams = route.params;
   const [day, setDay] = useState<DateData>({} as DateData);
   const [calendar, setCalendarVisible] = useState(false);
   const [initialDate, setInitialDate] = useState<any>();
@@ -102,7 +104,7 @@ export default function TaskEdit({ route }: any) {
     setLocal(taskData.local!);
     setAmbience(taskData.environment);
     ChangeDistancePicker();
-    setInitialDate(dayjs(taskData.date).format('YYYY-MM-DD'));        
+    setInitialDate(formatDate(taskData.date + ""));        
     initialDate && setDay({ dateString: initialDate, day: +initialDate!.split("-")[2], month: +initialDate!.split("-")[1], year: +initialDate!.split("-")[0], timestamp: 0 }); 
     const timeFormated = convertISOToTime(taskData.duration!);
     setSelectedTime({ hours: +timeFormated.split(":")[0], minutes: +timeFormated.split(":")[1], seconds: +timeFormated.split(":")[2] });
@@ -127,7 +129,7 @@ export default function TaskEdit({ route }: any) {
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        navigation.navigate("TaskList", { desafioId, desafioName });
+        navigation.navigate("TaskList", { participationId, desafioName });
       })
       .catch((error) => console.error(error));
   }
@@ -158,6 +160,12 @@ export default function TaskEdit({ route }: any) {
     return currentDate.toISOString();
   }
 
+  function formatDate(isoDate: string): string {
+    const date = dayjs(isoDate).utc(); // Apenas converter para UTC sem ajuste adicional
+
+    return date.format('YYYY-MM-DD');
+}
+
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
       <ScrollView
@@ -170,7 +178,7 @@ export default function TaskEdit({ route }: any) {
             <Left />
           </TouchableOpacity>
           <Text className="text-base font-inter-bold mx-auto ">
-            Editar atividade 
+            Editar atividade {initialDate}
           </Text>
         </View>
 

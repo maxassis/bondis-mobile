@@ -31,7 +31,7 @@ interface Distance {
   meters: number;
 }
 
-interface RouteParams { desafioId: number, desafioName: string } 
+interface RouteParams { participationId: number, desafioName: string } 
 
 export default function TaskCreate({ route }: any) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -55,7 +55,7 @@ export default function TaskCreate({ route }: any) {
   const [selectedTime, setSelectedTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const navigation = useNavigation<any>();
   const token = tokenExists((state) => state.token);
-  const { desafioId, desafioName }: RouteParams = route.params;
+  const { participationId, desafioName }: RouteParams = route.params;
   const childRef = useRef<KilometerMeterPickerModalRef>(null);
   const timePickerRef = useRef<TimePickerModalRef>(null);
 
@@ -87,7 +87,7 @@ export default function TaskCreate({ route }: any) {
          "distance": +`${distance.kilometers}.${distance.meters}`,
          "environment": ambience,
          "calories": +calories,
-         "participationId": desafioId,
+         "participationId": 26,
          "date": !day ? formatDateToISO(dayjs().format('YYYY-MM-DD')) : formatDateToISO(day.dateString),
          "duration": convertTimeToISO(selectedTime.hours + ':' + selectedTime.minutes + ':' + selectedTime.seconds),
        })
@@ -96,7 +96,7 @@ export default function TaskCreate({ route }: any) {
     .then(json => {      
       console.log(json);
       
-      navigation.navigate("TaskList", {desafioId, desafioName})
+      navigation.navigate("TaskList", {participationId, desafioName})
       clearInputs()
     })
     .catch(error => console.error(error));
@@ -154,7 +154,7 @@ export default function TaskCreate({ route }: any) {
         </View>
 
         <Text className="text-2xl font-inter-bold mt-7">
-          Como foi o sua atividade? 
+          Como foi o sua atividade?  {participationId}
         </Text>
 
         <Text className="font-inter-bold text-base mt-7">
