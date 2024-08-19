@@ -41,7 +41,9 @@ export default function DesafioSelect() {
       },
     })
       .then((response) => response.json() as Promise<DesafioData>)
-      .then((res) => setDesafios(res));
+      .then((res) => { 
+        setDesafios(res)   
+      });
   }, []);
 
   return (
@@ -49,7 +51,7 @@ export default function DesafioSelect() {
       <View className="pt-[38px] px-5">
         <View className="mb-[10px]">
           <TouchableOpacity
-            onPress={() => navigation.navigate("Intro")}
+            onPress={() => navigation.goBack()}
             className="h-[43px] w-[43px] rounded-full bg-bondis-text-gray justify-center items-center"
           >
             <Left />
@@ -62,7 +64,7 @@ export default function DesafioSelect() {
 
         {desafios &&
           desafios.map((item, index) => (
-            <TouchableOpacity className="h-[94px] flex-row items-center px-3 py-[15px] border-b-[1px] border-b-[#D9D9D9]">
+            <TouchableOpacity key={index} onPress={() => navigation.navigate("TaskCreate", {participationId: item.id, desafioName: item.desafio.name})} className="h-[94px] flex-row items-center px-3 py-[15px] border-b-[1px] border-b-[#D9D9D9]">
               <Image source={require("../../assets/Bg.png")} />
               <View className="ml-5" key={index}>
                 <Text className="font-inter-bold">{item.desafio.name}</Text>

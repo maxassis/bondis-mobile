@@ -87,7 +87,7 @@ export default function RecoveryCreatePassword({ route }: any) {
   };
 
  async function reqCreatePassword() {
-    console.log(password, password2);
+    // console.log(password, password2);
     
     if (password !== password2) return
     
