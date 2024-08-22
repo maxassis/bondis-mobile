@@ -28,7 +28,9 @@ export default function TaskList({ route }: any) {
   const [data, setData] = useState<TasksData>();
   const [task, setTask] = useState<Data>();
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetEditRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["30%"], []);
+  const snapPointsEdit = useMemo(() => ["20%"], []);
 
   const fetchTasks = useCallback(() => {
     fetch(`http://172.22.0.1:3000/tasks/get-tasks/26`, {
@@ -50,6 +52,11 @@ export default function TaskList({ route }: any) {
       fetchTasks();
     }, [fetchTasks])
   );
+
+  function openModalEdit(taskData: Data) {
+    setTask(taskData);
+    bottomSheetEditRef.current?.expand()
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -73,9 +80,7 @@ export default function TaskList({ route }: any) {
         </View>
 
         {data && data.map((task) => (
-          <TouchableOpacity onPress={() => setTask(task)} key={task.id}>
-             <TaskItem task={task}  participationId={participationId} desafioName={desafioName} />
-          </TouchableOpacity>
+             <TaskItem task={task} key={task.id} openModalEdit={openModalEdit} />
         ))}
 
       </ScrollView>
@@ -113,6 +118,29 @@ export default function TaskList({ route }: any) {
           </View>
         </BottomSheetView>
       </BottomSheet>
+
+      <BottomSheet
+        ref={bottomSheetEditRef}
+        snapPoints={snapPointsEdit}
+        index={-1}
+        enablePanDownToClose
+        backgroundStyle={{
+          borderRadius: 20,
+        }}
+      >
+        <BottomSheetView className="flex-1">
+          <View className="mx-5">
+            <TouchableOpacity onPress={() => { navigation.navigate("TaskEdit", { participationId: participationId, taskData: task, desafioName }); bottomSheetEditRef.current?.close()}} 
+            className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
+              <Text>Editar atividade</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="h-[51px] justify-center items-center">
+              <Text className="text-bondis-alert-red">Excluir atividade</Text>
+            </TouchableOpacity>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>  
+
     </SafeAreaView>
   );
 }

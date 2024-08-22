@@ -23,6 +23,11 @@ export interface TaskItemProps {
   usersId: string
 }
 
+export interface TaskListProps {
+  task: TaskItemProps
+  openModalEdit: (taskData: TaskItemProps) => void
+}
+
 function convertISOToTime(isoString: string): string {
   const date = new Date(isoString);  
   const hours = date.getUTCHours().toString().padStart(2, '0');
@@ -41,7 +46,7 @@ const daysSinceDate = (dateStr: string | Date): number => {
 };
 
 
-export default function TaskItem({ task, participationId, desafioName }: { task: TaskItemProps, participationId: number, desafioName: string }) {
+export default function TaskItem({ task, openModalEdit }: TaskListProps) {
     const navigation = useNavigation<any>();
 
     return(
@@ -70,7 +75,7 @@ export default function TaskItem({ task, participationId, desafioName }: { task:
               </View>
             </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate("TaskEdit", { participationId: participationId, taskData: task, desafioName })} className="ml-auto w-[40px] h-[32px] items-end">
+            <TouchableOpacity onPress={() => openModalEdit(task)} className="ml-auto w-[40px] h-[32px] items-end">
               <Gear />
             </TouchableOpacity>
           </View>
