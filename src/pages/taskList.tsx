@@ -73,8 +73,8 @@ export default function TaskList({ route }: any) {
         </View>
 
         {data && data.map((task) => (
-          <TouchableOpacity onPress={() => setTask(task)}>
-             <TaskItem task={task} key={task.id} participationId={participationId} desafioName={desafioName} />
+          <TouchableOpacity onPress={() => setTask(task)} key={task.id}>
+             <TaskItem task={task}  participationId={participationId} desafioName={desafioName} />
           </TouchableOpacity>
         ))}
 

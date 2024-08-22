@@ -6,6 +6,9 @@ import Gear from "../../assets/settings-black.svg";
 import Link from "../../assets/link.svg";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 export interface TaskItemProps {
   id: number
@@ -29,6 +32,14 @@ function convertISOToTime(isoString: string): string {
   return `${hours}:${minutes}:${seconds}`;
 }
 
+const daysSinceDate = (dateStr: string | Date): number => {
+  const targetDate = dayjs(dateStr);
+  const currentDate = dayjs();
+  const differenceInDays = currentDate.diff(targetDate, 'day');
+
+  return differenceInDays;
+};
+
 
 export default function TaskItem({ task, participationId, desafioName }: { task: TaskItemProps, participationId: number, desafioName: string }) {
     const navigation = useNavigation<any>();
@@ -46,7 +57,7 @@ export default function TaskItem({ task, participationId, desafioName }: { task:
                   <View className="flex-row gap-x-1 items-center justify-center">
                     <Calendar />
                     <Text className="text-bondis-gray-dark text-xs">
-                      Há 2 dias
+                    {`Há ${daysSinceDate(task.date!)} dias`}
                     </Text>
                   </View>
                   <View className="flex-row gap-x-1 items-center justify-center ml-4">
@@ -64,9 +75,9 @@ export default function TaskItem({ task, participationId, desafioName }: { task:
             </TouchableOpacity>
           </View>
 
-          <View className="flex-row items-center gap-x-1 mt-3">
+          <View className="flex-row items-center gap-x-1 mt-3 none">
             <Link />
-            <Text className="text-xs text-bondis-gray-dark">Sincronizado via Strava</Text>
+            <Text className="text-xs text-bondis-gray-dark">Cadastrado manualmente</Text>
           </View> 
 
           <View className="flex-row mt-3">

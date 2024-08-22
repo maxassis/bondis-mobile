@@ -178,7 +178,7 @@ export default function TaskEdit({ route }: any) {
             <Left />
           </TouchableOpacity>
           <Text className="text-base font-inter-bold mx-auto ">
-            Editar atividade {initialDate}
+            Editar atividade
           </Text>
         </View>
 
@@ -245,6 +245,7 @@ export default function TaskEdit({ route }: any) {
               <Pressable>
                 <View className="bg-white p-6 rounded-lg shadow-lg w-80">
                   <Calendar
+                    maxDate={new Date().toISOString().split('T')[0]}
                     current=""
                     className="rounded-lg"
                     theme={{
