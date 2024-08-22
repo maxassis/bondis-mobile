@@ -154,7 +154,7 @@ export default function TaskCreate({ route }: any) {
         </View>
 
         <Text className="text-2xl font-inter-bold mt-7">
-          Como foi o sua atividade?  {participationId}
+          Como foi o sua atividade? 
         </Text>
 
         <Text className="font-inter-bold text-base mt-7">
@@ -221,7 +221,7 @@ export default function TaskCreate({ route }: any) {
               <Pressable>
                 <View className="bg-white p-6 rounded-lg shadow-lg w-80">
                   <Calendar
-                    // current={day}
+                    maxDate={new Date().toISOString().split('T')[0]}
                     className="rounded-lg"
                     theme={{
                       todayTextColor: "#EB4335",
