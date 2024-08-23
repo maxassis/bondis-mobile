@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import tokenExists from "../store/auth";
-import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { SafeAreaView, View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import Left from "../../assets/Icon-left.svg";
 import TaskItem from "../components/taskItem";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -46,6 +46,54 @@ export default function TaskList({ route }: any) {
       })
       .catch((error) => console.error(error));
   }, [participationId, token]);
+
+  function deleteTask(id: number) {
+    Alert.alert(
+      "Confirmação de Exclusão", 
+      "Tem certeza que deseja excluir esta tarefa?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel", 
+        },
+        {
+          text: "Excluir",
+          style: "destructive", 
+          onPress: () => {
+            fetch(`http://172.22.0.1:3000/tasks/delete-task/${id}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                bottomSheetEditRef.current?.close()
+                return response.json();
+              })
+              .then((json) => {
+                console.log("Task deleted:", json);
+                fetchTasks(); 
+              })
+              .catch((error) => {
+                console.error("Failed to delete the task:", error);
+                Alert.alert("Erro ao excluir tarefa", "", [
+                  {
+                    text: "Ok",
+                    style: "cancel",
+                  }
+                ])
+              });
+          },
+        },
+      ],
+      { cancelable: true } // O alerta pode ser cancelado ao tocar fora dele
+    );
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -134,7 +182,7 @@ export default function TaskList({ route }: any) {
             className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
               <Text>Editar atividade</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="h-[51px] justify-center items-center">
+            <TouchableOpacity onPress={() => deleteTask(task!.id)} className="h-[51px] justify-center items-center">
               <Text className="text-bondis-alert-red">Excluir atividade</Text>
             </TouchableOpacity>
           </View>
