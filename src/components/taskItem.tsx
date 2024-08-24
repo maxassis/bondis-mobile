@@ -37,14 +37,23 @@ function convertISOToTime(isoString: string): string {
   return `${hours}:${minutes}:${seconds}`;
 }
 
-const daysSinceDate = (dateStr: string | Date): number => {
+const timeSinceDate = (dateStr: string | Date): string => {
   const targetDate = dayjs(dateStr);
+  if (!targetDate.isValid()) {
+    throw new Error("Data inválida");
+  }
   const currentDate = dayjs();
+  const differenceInYears = currentDate.diff(targetDate, 'year');
+  const differenceInMonths = currentDate.diff(targetDate, 'month');
   const differenceInDays = currentDate.diff(targetDate, 'day');
-
-  return differenceInDays;
+  if (differenceInYears >= 1) {
+    return `Há ${differenceInYears} ano(s)`;
+  } else if (differenceInMonths >= 1) {
+    return differenceInMonths === 1 ? `Há 1 mês` : `Há ${differenceInMonths} meses`;
+  } else {
+    return differenceInDays === 1 ? `Há 1 dia` : `Há ${differenceInDays} dias`;
+  }
 };
-
 
 export default function TaskItem({ task, openModalEdit }: TaskListProps) {
     const navigation = useNavigation<any>();
@@ -62,7 +71,7 @@ export default function TaskItem({ task, openModalEdit }: TaskListProps) {
                   <View className="flex-row gap-x-1 items-center justify-center">
                     <Calendar />
                     <Text className="text-bondis-gray-dark text-xs">
-                    {`Há ${daysSinceDate(task.date!)} dias`}
+                    {timeSinceDate(task.date!)}
                     </Text>
                   </View>
                   <View className="flex-row gap-x-1 items-center justify-center ml-4">
