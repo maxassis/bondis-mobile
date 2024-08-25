@@ -153,6 +153,7 @@ export default function Map() {
   const [userProgress, setUserProgress] = useState<any>(0);
   const [userDistance, setUserDistance] = useState<number>(0);
   const [totalDistance, setTotalDistance] = useState<number>(0);
+  const [userLocation, setUserLocation] = useState<any>([]);
   const getUserData = userDataStore((state) => state.data);
   const mapRef = useRef<MapView>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -187,19 +188,19 @@ export default function Map() {
     return path;
   };
 
-  async function requestLocationPermissions() {
-    const { granted } = await requestForegroundPermissionsAsync();
+  // async function requestLocationPermissions() {
+  //   const { granted } = await requestForegroundPermissionsAsync();
 
-    if (granted) {
-      const currentPosition = await getCurrentPositionAsync();
+  //   if (granted) {
+  //     const currentPosition = await getCurrentPositionAsync();
 
-      setLocation(currentPosition);
-    }
-  }
+  //     setLocation(currentPosition);
+  //   }
+  // }
 
-  useEffect(() => {
-    requestLocationPermissions();
-  }, []);
+  // useEffect(() => {
+  //   requestLocationPermissions();
+  // }, []);
 
   useEffect(() => {
     watchPositionAsync(
@@ -240,6 +241,7 @@ export default function Map() {
         if(dta.user.id === getUserData?.usersId) {
           setUserProgress(Number(progressPercentage) / 100)
           setUserDistance(dta.progress);
+          setUserLocation(userLocation);
         }
 
         return {
@@ -267,10 +269,10 @@ export default function Map() {
           className="flex-1 w-full"
           // ref={mapRef}
           initialRegion={{
-            latitude: desafio?.location[0][0],        
-            longitude: desafio?.location[0][1],
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitude: userLocation?.latitude || desafio?.location[0][0],        
+            longitude: userLocation?.longitude || desafio?.location[0][1],
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1,
           }}
         >
           {desafio && (
