@@ -298,8 +298,12 @@ export default function Map() {
           } : user.location} 
           style={user.userId === getUserData?.usersId ? {zIndex: 100000, elevation: 100000}: {zIndex: index, elevation: index}}
           > 
-          <View className={userPin({intent: user.userId === getUserData?.usersId ? "user" : null})}  > 
-            <Image source={{ uri: user.avatar}} className={photoUser({intent: user.userId === getUserData?.usersId ? "user" : null})}  />
+          <View className={userPin({intent: user.userId === getUserData?.usersId ? "user" : null})}  >
+            {user.avatar ? (
+              <Image source={{ uri: user.avatar }} className={photoUser({intent: user.userId === getUserData?.usersId ? "user" : null})}  />
+            ) : (
+              <Image source={require("../../assets/user2.png")} className="h-[50px] w-[50px] rounded-full " />
+            )} 
           </View>
           <Callout tooltip > 
             <View className="p-1 w-[150px] bg-bondis-black mb-2 justify-center items-center rounded-md">
