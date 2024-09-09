@@ -33,7 +33,7 @@ export default function TaskList({ route }: any) {
   const snapPointsEdit = useMemo(() => ["20%"], []);
 
   const fetchTasks = useCallback(() => {
-    fetch(`http://172.22.0.1:3000/tasks/get-tasks/26`, {
+    fetch(`https://bondis-app-backend.onrender.com/tasks/get-tasks/26`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export default function TaskList({ route }: any) {
           text: "Excluir",
           style: "destructive", 
           onPress: () => {
-            fetch(`http://172.22.0.1:3000/tasks/delete-task/${id}`, {
+            fetch(`https://bondis-app-backend.onrender.com/tasks/delete-task/${id}`, {
               method: "DELETE",
               headers: {
                 "Content-Type": "application/json",

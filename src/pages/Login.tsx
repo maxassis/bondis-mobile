@@ -43,7 +43,7 @@ export default function Login() {
     password: string;
   }) => {
     try {
-      const response = await fetch("http://172.22.0.1:3000/signin/", {
+      const response = await fetch("https://bondis-app-backend.onrender.com/signin/", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ email, password }),

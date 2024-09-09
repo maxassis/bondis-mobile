@@ -112,7 +112,7 @@ export default function TaskEdit({ route }: any) {
   }, []);
 
   function updateTaskData() {
-    fetch(`http://172.22.0.1:3000/tasks/update-task/${taskData.id}`, {
+    fetch(`https://bondis-app-backend.onrender.com/tasks/update-task/${taskData.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

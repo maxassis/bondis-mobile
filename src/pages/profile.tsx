@@ -40,7 +40,7 @@ export default function Profile() {
 
   useEffect(() => {
     async function getUserData() {
-    await fetch("http://172.22.0.1:3000/users/getUserData", {
+    await fetch("https://bondis-app-backend.onrender.com/users/getUserData", {
         headers: {
           "Content-type": "application/json",
           authorization:

@@ -23,7 +23,7 @@ export default function Recovery() {
   const onSubmit = async ({ email }: { email: string }) => {
 
     try {
-      const response = await fetch("http://172.22.0.1:3000/checkemail", {
+      const response = await fetch("https://bondis-app-backend.onrender.com/checkemail", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ email }),

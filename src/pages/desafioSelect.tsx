@@ -33,7 +33,7 @@ export default function DesafioSelect() {
   const token = tokenExists((state) => state.token);
 
   useEffect(() => {
-    fetch("http://172.22.0.1:3000/desafio/getuserdesafio/", {
+    fetch("https://bondis-app-backend.onrender.com/desafio/getuserdesafio/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

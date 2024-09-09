@@ -90,7 +90,7 @@ export default function CreatePassword({ route }: any) {
     if (password !== password2) return
     
     try {
-      const response = await fetch("http://172.22.0.1:3000/users", {
+      const response = await fetch("https://bondis-app-backend.onrender.com/users", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ name, email, password }),
