@@ -33,7 +33,7 @@ export default function TaskList({ route }: any) {
   const snapPointsEdit = useMemo(() => ["20%"], []);
 
   const fetchTasks = useCallback(() => {
-    fetch(`http://172.22.0.1:3000/tasks/get-tasks/26`, {
+    fetch(`http://172.22.0.1:3000/tasks/get-tasks/${participationId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
