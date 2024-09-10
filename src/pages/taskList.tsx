@@ -33,7 +33,7 @@ export default function TaskList({ route }: any) {
   const snapPointsEdit = useMemo(() => ["20%"], []);
 
   const fetchTasks = useCallback(() => {
-    fetch(`https://bondis-app-backend.onrender.com/tasks/get-tasks/26`, {
+    fetch(`https://bondis-app-backend.onrender.com/tasks/get-tasks/${participationId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

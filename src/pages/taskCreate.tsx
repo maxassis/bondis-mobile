@@ -87,7 +87,7 @@ export default function TaskCreate({ route }: any) {
          "distance": +`${distance.kilometers}.${distance.meters}`,
          "environment": ambience,
          "calories": +calories,
-         "participationId": 26,
+         "participationId": participationId,
          "date": !day ? formatDateToISO(dayjs().format('YYYY-MM-DD')) : formatDateToISO(day.dateString),
          "duration": convertTimeToISO(selectedTime.hours + ':' + selectedTime.minutes + ':' + selectedTime.seconds),
        })

@@ -219,7 +219,7 @@ export default function Map() {
   }, []);
 
   useEffect(() => {
-    fetch("https://bondis-app-backend.onrender.com/desafio/getdesafio/24", {
+    fetch("https://bondis-app-backend.onrender.com/desafio/getdesafio/1", {
       headers: {
         "Content-type": "application/json",
         authorization:
